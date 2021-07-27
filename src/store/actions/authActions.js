@@ -17,3 +17,16 @@ export const signin = (phoneNumber, history) => {
     }
   };
 };
+export const signout = (history) => {
+  return async (dispatch) => {
+    try {
+      history.push('/');
+      dispatch({
+        type: actionTypes.SIGNOUT,
+        payload: null,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
