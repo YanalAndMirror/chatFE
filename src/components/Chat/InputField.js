@@ -7,7 +7,7 @@ export default function InputField({ roomId, socket }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     socket.emit("chatMessage", { roomId, content, userId: user.id });
-    console.log(content);
+    setContent("");
   };
   return (
     <div class="bg-grey-lighter px-4 py-4 flex items-center">

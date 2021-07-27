@@ -1,14 +1,15 @@
-import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { createRoom } from '../../store/actions/chatActions';
+import { Dialog, Transition } from "@headlessui/react";
+import { Fragment, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { createRoom } from "../../store/actions/chatActions";
 
 export default function NewRoomModal() {
+  console.log("here");
   let [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   const [room, setRoom] = useState({
-    type: 'Private',
+    type: "Private",
   });
   function closeModal() {
     setIsOpen(false);
@@ -18,7 +19,7 @@ export default function NewRoomModal() {
     setIsOpen(true);
   }
   const handleSubmit = (event) => {
-    event.preventDefault();
+    console.log(room, user.id);
     dispatch(createRoom(room, user.id));
     closeModal();
   };
@@ -103,7 +104,7 @@ export default function NewRoomModal() {
                   <button
                     type="button"
                     className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-                    onClick={handleSubmit}
+                    onClick={() => handleSubmit()}
                   >
                     Create
                   </button>

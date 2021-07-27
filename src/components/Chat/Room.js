@@ -6,16 +6,15 @@ import RightHeader from "./RightHeader";
 
 export default function Room({ roomId, socket }) {
   let thisRoom = useSelector((state) =>
-    state.chats.chats.find((chat) => chat.roomId === roomId)
+    state.chats.chats.find((chat) => chat._id === roomId)
   );
-  console.log(socket);
   return roomId ? (
     <>
       <div class="w-2/3 border flex flex-col">
         {/* <!-- Header --> */}
-        <RightHeader name={thisRoom.name} />
+        <RightHeader thisRoom={thisRoom} />
         {/* <!-- Messages --> */}
-        <MsgsList messages={thisRoom.messages} />
+        <MsgsList messages={thisRoom.messages ?? []} />
         {/* <!-- Input --> */}
         <InputField roomId={roomId} socket={socket} />
       </div>

@@ -7,9 +7,10 @@ import RightHeader from "./RightHeader";
 import SearchBar from "./SearchBar";
 import { io } from "socket.io-client";
 import Room from "./Room";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addMessage } from "../../store/actions/chatActions";
 export default function Chat() {
+  const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const [socket, setSocket] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -20,10 +21,13 @@ export default function Chat() {
     setLoading(true);
   }
   useEffect(() => {
-    if (socket)
+    if (socket) {
+      socket.emit("userId", user._id);
       socket.on("message", (message) => {
+        // to Do , add sound
         dispatch(addMessage(message.roomId, message.content));
       });
+    }
   }, [loading]);
   const [roomId, setRoomId] = useState(false);
   return (
