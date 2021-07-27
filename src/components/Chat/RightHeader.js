@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-export default function RightHeader() {
+export default function RightHeader({ name }) {
   return (
     <div>
       <div class="py-2 px-3 bg-grey-lighter flex flex-row justify-between items-center">
@@ -12,7 +12,7 @@ export default function RightHeader() {
             />
           </div>
           <div class="ml-4">
-            <p class="text-grey-darkest">John Doe</p>
+            <p class="text-grey-darkest">{name}</p>
             <p class="text-grey-darker text-xs mt-1">Online</p>
           </div>
         </div>

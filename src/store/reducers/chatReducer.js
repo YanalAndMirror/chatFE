@@ -1,7 +1,11 @@
 import * as actionTypes from "../actions/types";
 const initialState = {
   chats: [
-    { roomId: 1, messages: ["كم السعر"], name: "Ahmed" },
+    {
+      roomId: "61003e29f4c5e7bf645b6dbd",
+      messages: ["كم السعر"],
+      name: "Ahmed",
+    },
     { roomId: 2, messages: ["مرحبا"], name: "Mohammad" },
     { roomId: 3, messages: ["Get Andrés on this movie ASAP"], name: "Yanal" },
   ],

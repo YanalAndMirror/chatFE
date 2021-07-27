@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function InputField({ roomId, socket }) {
   const [content, setContent] = useState("");
+  const user = useSelector((state) => state.user.user);
   const handleSubmit = (e) => {
     e.preventDefault();
-    socket.emit("chatMessage", { roomId, content });
+    socket.emit("chatMessage", { roomId, content, userId: user.id });
     console.log(content);
   };
   return (
