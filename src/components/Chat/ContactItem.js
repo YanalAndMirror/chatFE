@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
-export default function ContactItem() {
+export default function ContactItem({ name, lastMessage, setRoomId, roomId }) {
   return (
-    <div>
+    <div onClick={() => setRoomId(roomId)}>
       <div class="px-3 flex items-center hover:bg-grey-light cursor-pointer">
         <div>
           <img
@@ -12,12 +12,10 @@ export default function ContactItem() {
         </div>
         <div class="ml-4 flex-1 border-b border-grey-lighter py-4">
           <div class="flex items-bottom justify-between">
-            <p class="text-grey-darkest">John Doe</p>
+            <p class="text-grey-darkest">{name}</p>
             <p class="text-xs text-grey-darkest">12:45 pm</p>
           </div>
-          <p class="text-grey-dark mt-1 text-sm">
-            Get Andrés on this movie ASAP!
-          </p>
+          <p class="text-grey-dark mt-1 text-sm">{lastMessage}</p>
         </div>
       </div>
     </div>

@@ -1,8 +1,8 @@
-import Login from './components/Auth/Login';
-import Chat from './components/Chat/Chat';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import './App.css';
-import { useSelector } from 'react-redux';
+import Login from "./components/Auth/Login";
+import Chat from "./components/Chat/Chat";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import "./App.css";
+import { useSelector } from "react-redux";
 
 function App() {
   const user = useSelector((state) => state.user.user);

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import loginImage from '../../assets/loginImage.svg';
-import { signin } from '../../store/actions/authActions';
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import loginImage from "../../assets/loginImage.svg";
+import { signin } from "../../store/actions/authActions";
 export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState();
   const history = useHistory();
@@ -12,7 +12,10 @@ export default function Login() {
     dispatch(signin(phoneNumber, history));
   };
   return (
-    <div class="flex h-screen items-center justify-center">
+    <div
+      class="flex h-screen items-center justify-center"
+      style={{ background: "#edf2f7" }}
+    >
       <div class="shadow-xl p-10 bg-white max-w-xl rounded">
         <img src={loginImage} alt="login" />
         <h1 class="text-4xl font-black mb-4">Login</h1>

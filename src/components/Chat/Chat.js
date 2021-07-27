@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ContactList from "./ContactList";
 import InputField from "./InputField";
 import LeftHeader from "./LeftHeader";
@@ -6,9 +6,26 @@ import MsgsList from "./MsgsList";
 import RightHeader from "./RightHeader";
 import SearchBar from "./SearchBar";
 import { io } from "socket.io-client";
-
+import Room from "./Room";
+import { useDispatch } from "react-redux";
+import { addMessage } from "../../store/actions/chatActions";
 export default function Chat() {
-  const socket = io("localhost:8000");
+  const dispatch = useDispatch();
+  const [socket, setSocket] = useState(false);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    setSocket(io("localhost:8000"));
+  }, []);
+  if (socket && loading === false) {
+    setLoading(true);
+  }
+  useEffect(() => {
+    if (socket)
+      socket.on("message", (message) => {
+        dispatch(addMessage(message.roomId, message.content));
+      });
+  }, [loading]);
+  const [roomId, setRoomId] = useState(false);
   return (
     <>
       <div>
@@ -19,27 +36,12 @@ export default function Chat() {
             <div class="flex border border-grey rounded shadow-lg h-full">
               {/* <!-- Left --> */}
               <div class="w-1/3 border flex flex-col">
-                {/* <!-- Header --> */}
-
                 <LeftHeader />
-
-                {/* <!-- Search --> */}
-
                 <SearchBar />
-
-                {/* <!-- Contacts --> */}
-                <ContactList />
+                <ContactList setRoomId={setRoomId} />
               </div>
-
               {/* <!-- Right --> */}
-              <div class="w-2/3 border flex flex-col">
-                {/* <!-- Header --> */}
-                <RightHeader />
-                {/* <!-- Messages --> */}
-                <MsgsList />
-                {/* <!-- Input --> */}
-                <InputField />
-              </div>
+              {<Room roomId={roomId} socket={socket} />}
             </div>
           </div>
         </div>

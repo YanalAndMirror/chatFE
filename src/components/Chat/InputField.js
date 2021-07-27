@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useState } from "react";
 
-export default function InputField() {
+export default function InputField({ roomId, socket }) {
+  const [content, setContent] = useState("");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    socket.emit("chatMessage", { roomId, content });
+    console.log(content);
+  };
   return (
     <div class="bg-grey-lighter px-4 py-4 flex items-center">
       <div>
@@ -18,7 +24,14 @@ export default function InputField() {
         </svg>
       </div>
       <div class="flex-1 mx-4">
-        <input class="w-full border rounded px-2 py-2" type="text" />
+        <form onSubmit={handleSubmit}>
+          <input
+            class="w-full border rounded px-2 py-2"
+            type="text"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+        </form>
       </div>
       <div>
         <svg
