@@ -11,6 +11,19 @@ const reducer = (state = initialState, action) => {
         user: action.payload,
       };
     }
+    case actionTypes.SIGNOUT: {
+      return {
+        ...state,
+        user: null,
+      };
+    }
+    case actionTypes.UPDATE_USER: {
+      console.log(action.payload);
+      return {
+        ...state,
+        user: action.payload,
+      };
+    }
 
     default:
       return state;

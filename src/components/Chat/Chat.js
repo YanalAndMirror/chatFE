@@ -1,20 +1,20 @@
-import React from "react";
-import ContactList from "./ContactList";
-import InputField from "./InputField";
-import LeftHeader from "./LeftHeader";
-import MsgsList from "./MsgsList";
-import RightHeader from "./RightHeader";
-import SearchBar from "./SearchBar";
-import { io } from "socket.io-client";
+import React from 'react';
+import ContactList from './ContactList';
+import InputField from './InputField';
+import LeftHeader from './LeftHeader';
+import MsgsList from './MsgsList';
+import RightHeader from './RightHeader';
+import SearchBar from './SearchBar';
+import { io } from 'socket.io-client';
 
 export default function Chat() {
-  const socket = io("localhost:8000");
+  const socket = io('localhost:8000');
   return (
     <>
       <div>
-        <div class="w-full h-32" style={{ backgroundColor: "#449388" }}></div>
+        <div class="w-full h-32" style={{ backgroundColor: '#449388' }}></div>
 
-        <div class="container mx-auto" style={{ marginTop: "-128px" }}>
+        <div class="container mx-auto" style={{ marginTop: '-128px' }}>
           <div class="py-6 h-screen">
             <div class="flex border border-grey rounded shadow-lg h-full">
               {/* <!-- Left --> */}

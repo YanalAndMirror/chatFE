@@ -1,30 +1,20 @@
 import React from 'react';
-
+import { useSelector } from 'react-redux';
+import nophoto from '../../assets/no-photo.png';
+import UserMenu from './UserMenu';
 export default function LeftHeader() {
+  const user = useSelector((state) => state.user.user);
   return (
     <div>
       <div class="py-2 px-3 bg-grey-lighter flex flex-row justify-between items-center">
         <div>
           <img
             class="w-10 h-10 rounded-full"
-            src="http://andressantibanez.com/res/avatar.png"
+            src={user.photo === 'no-photo.jpg' ? nophoto : user.photo}
           />
         </div>
 
         <div class="flex">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="24"
-              height="24"
-            >
-              <path
-                fill="#727A7E"
-                d="M12 20.664a9.163 9.163 0 0 1-6.521-2.702.977.977 0 0 1 1.381-1.381 7.269 7.269 0 0 0 10.024.244.977.977 0 0 1 1.313 1.445A9.192 9.192 0 0 1 12 20.664zm7.965-6.112a.977.977 0 0 1-.944-1.229 7.26 7.26 0 0 0-4.8-8.804.977.977 0 0 1 .594-1.86 9.212 9.212 0 0 1 6.092 11.169.976.976 0 0 1-.942.724zm-16.025-.39a.977.977 0 0 1-.953-.769 9.21 9.21 0 0 1 6.626-10.86.975.975 0 1 1 .52 1.882l-.015.004a7.259 7.259 0 0 0-5.223 8.558.978.978 0 0 1-.955 1.185z"
-              ></path>
-            </svg>
-          </div>
           <div class="ml-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -39,20 +29,7 @@ export default function LeftHeader() {
               ></path>
             </svg>
           </div>
-          <div class="ml-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="24"
-              height="24"
-            >
-              <path
-                fill="#263238"
-                fill-opacity=".6"
-                d="M12 7a2 2 0 1 0-.001-4.001A2 2 0 0 0 12 7zm0 2a2 2 0 1 0-.001 3.999A2 2 0 0 0 12 9zm0 6a2 2 0 1 0-.001 3.999A2 2 0 0 0 12 15z"
-              ></path>
-            </svg>
-          </div>
+          <UserMenu />
         </div>
       </div>
     </div>
