@@ -1,6 +1,7 @@
 import React from "react";
+import nophoto from "../../assets/no-photo.png";
 
-export default function RightHeader({ name }) {
+export default function RightHeader({ thisRoom }) {
   return (
     <div>
       <div class="py-2 px-3 bg-grey-lighter flex flex-row justify-between items-center">
@@ -8,11 +9,11 @@ export default function RightHeader({ name }) {
           <div>
             <img
               class="w-10 h-10 rounded-full"
-              src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg"
+              src={thisRoom.photo === "no-photo.jpg" ? nophoto : thisRoom.photo}
             />
           </div>
           <div class="ml-4">
-            <p class="text-grey-darkest">{name}</p>
+            <p class="text-grey-darkest">{thisRoom.name}</p>
             <p class="text-grey-darker text-xs mt-1">Online</p>
           </div>
         </div>

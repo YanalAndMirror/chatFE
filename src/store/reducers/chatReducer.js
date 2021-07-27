@@ -2,7 +2,7 @@ import * as actionTypes from "../actions/types";
 const initialState = {
   chats: [
     {
-      roomId: "61003e29f4c5e7bf645b6dbd",
+      roomId: "6100487d9b996722dc5addc8",
       messages: ["كم السعر"],
       name: "Ahmed",
     },
@@ -13,12 +13,20 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case actionTypes.FETCH_ROOM: {
+      return {
+        ...state,
+        chats: action.payload,
+      };
+    }
     case actionTypes.ADD_MESSAGE: {
       let newChatAfterMessage = state.chats.map((chat) => {
-        if (action.payload.roomId === chat.roomId)
+        if (action.payload.roomId === chat._id)
           return {
             ...chat,
-            messages: [...chat.messages, action.payload.content],
+            messages: chat.messages
+              ? [...chat.messages, action.payload.content]
+              : [action.payload.content],
           };
         return chat;
       });

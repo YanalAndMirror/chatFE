@@ -1,13 +1,20 @@
 import React from "react";
+import nophoto from "../../assets/no-photo.png";
 
-export default function ContactItem({ name, lastMessage, setRoomId, roomId }) {
+export default function ContactItem({
+  photo,
+  name,
+  lastMessage,
+  setRoomId,
+  roomId,
+}) {
   return (
     <div onClick={() => setRoomId(roomId)}>
       <div class="px-3 flex items-center hover:bg-grey-light cursor-pointer">
         <div>
           <img
             class="h-12 w-12 rounded-full"
-            src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg"
+            src={photo === "no-photo.jpg" ? nophoto : photo}
           />
         </div>
         <div class="ml-4 flex-1 border-b border-grey-lighter py-4">

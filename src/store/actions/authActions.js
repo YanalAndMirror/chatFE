@@ -1,5 +1,6 @@
-import * as actionTypes from './types';
-import instance from './instance';
+import * as actionTypes from "./types";
+import instance from "./instance";
+import { fetchRoom } from "./chatActions";
 
 export const signin = (phoneNumber, history) => {
   return async (dispatch) => {
@@ -7,7 +8,8 @@ export const signin = (phoneNumber, history) => {
       const res = await instance.post(`/api/v1/users/login`, {
         phoneNumber: phoneNumber,
       });
-      history.push('/');
+      dispatch(fetchRoom(res.data._id));
+      history.push("/");
       dispatch({
         type: actionTypes.LOGIN,
         payload: res.data,
@@ -20,7 +22,7 @@ export const signin = (phoneNumber, history) => {
 export const signout = (history) => {
   return async (dispatch) => {
     try {
-      history.push('/');
+      history.push("/");
       dispatch({
         type: actionTypes.SIGNOUT,
         payload: null,

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createRoom } from '../../store/actions/chatActions';
 
 export default function NewRoomModal() {
+  console.log('here');
   let [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
@@ -18,7 +19,7 @@ export default function NewRoomModal() {
     setIsOpen(true);
   }
   const handleSubmit = (event) => {
-    event.preventDefault();
+    console.log(room, user.id);
     dispatch(createRoom(room, user.id));
     closeModal();
   };

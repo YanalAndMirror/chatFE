@@ -7,9 +7,10 @@ export default function ContactList({ setRoomId }) {
   console.log(chats);
   chats = chats.map((chat) => (
     <ContactItem
-      roomId={chat.roomId}
+      roomId={chat._id}
       name={chat.name}
-      lastMessage={chat.messages[chat.messages.length - 1]}
+      photo={chat.photo}
+      lastMessage={chat.messages ? chat.messages[chat.messages.length - 1] : ""}
       setRoomId={setRoomId}
     />
   ));
