@@ -8,3 +8,6 @@ export const SEEN_MESSAGE = "SEEN_MESSAGE";
 export const ADD_MESSAGE = "ADD_MESSAGE";
 export const CREATE_ROOM = "CREATE_ROOM";
 export const FETCH_ROOM = "FETCH_ROOM";
+export const UPDATE_ROOM = "UPDATE_ROOM";
+export const REMOVE_USER_FROM_GROUP = "REMOVE_USER_FROM_GROUP";
+export const ADD_USER_TO_GROUP = "ADD_USER_TO_GROUP";
