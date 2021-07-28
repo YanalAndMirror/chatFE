@@ -1,5 +1,5 @@
-import * as actionTypes from "./types";
-import instance from "./instance";
+import * as actionTypes from './types';
+import instance from './instance';
 
 export const addMessage = (roomId, content) => {
   return async (dispatch) => {
@@ -16,9 +16,8 @@ export const addMessage = (roomId, content) => {
 
 export const createRoom = (room, userId) => {
   return async (dispatch) => {
-    console.log(room);
     try {
-      if (room.type !== "Private") {
+      if (room.type !== 'Private') {
         room.admin = userId;
       }
       const formData = new FormData();
@@ -34,14 +33,72 @@ export const createRoom = (room, userId) => {
     }
   };
 };
+
+export const updateRoom = (roomId, roomInfo) => {
+  return async (dispatch) => {
+    try {
+      console.log(roomInfo);
+      const formData = new FormData();
+      for (const key in roomInfo) formData.append(key, roomInfo[key]);
+
+      const res = await instance.put(`/api/v1/rooms/${roomId}`, formData);
+      dispatch({
+        type: actionTypes.UPDATE_ROOM,
+        payload: res.data,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const removeUserFromGroup = (roomId, phoneNumber) => {
+  return async (dispatch) => {
+    try {
+      const userToRemove = {
+        to: phoneNumber,
+      };
+      console.log(roomId);
+      const res = await instance.post(
+        `/api/v1/rooms/${roomId}/remove`,
+        userToRemove
+      );
+      dispatch({
+        type: actionTypes.REMOVE_USER_FROM_GROUP,
+        payload: phoneNumber,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const addUserToGroup = (roomId, phoneNumber) => {
+  return async (dispatch) => {
+    try {
+      const userToAdd = {
+        to: phoneNumber,
+      };
+      console.log(roomId);
+      const res = await instance.post(`/api/v1/rooms/${roomId}/add`, userToAdd);
+      dispatch({
+        type: actionTypes.ADD_USER_TO_GROUP,
+        payload: phoneNumber,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
 export const fetchRoom = (userId) => {
   return async (dispatch) => {
     try {
       const res = await instance.get(`api/v1/rooms/user/${userId}`);
       let rooms = res.data.map((room) => {
-        if (room.type === "Private") {
+        if (room.type === 'Private') {
           let otherUser = room.users.find((user) => user._id !== userId);
-          if (otherUser.userName === "") room.name = otherUser.phoneNumber;
+          if (otherUser.userName === '') room.name = otherUser.phoneNumber;
           else room.name = otherUser.userName;
           room.photo = otherUser.photo;
         }

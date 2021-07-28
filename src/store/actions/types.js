@@ -1,9 +1,12 @@
 // Auth Action Types
-export const LOGIN = "LOGIN";
-export const SIGNOUT = "SIGNOUT";
+export const LOGIN = 'LOGIN';
+export const SIGNOUT = 'SIGNOUT';
 // User Action Types
-export const UPDATE_USER = "UPDATE_USER";
+export const UPDATE_USER = 'UPDATE_USER';
 // Chat Action Types
-export const ADD_MESSAGE = "ADD_MESSAGE";
-export const CREATE_ROOM = "CREATE_ROOM";
-export const FETCH_ROOM = "FETCH_ROOM";
+export const ADD_MESSAGE = 'ADD_MESSAGE';
+export const CREATE_ROOM = 'CREATE_ROOM';
+export const FETCH_ROOM = 'FETCH_ROOM';
+export const UPDATE_ROOM = 'UPDATE_ROOM';
+export const REMOVE_USER_FROM_GROUP = 'REMOVE_USER_FROM_GROUP';
+export const ADD_USER_TO_GROUP = 'ADD_USER_TO_GROUP';

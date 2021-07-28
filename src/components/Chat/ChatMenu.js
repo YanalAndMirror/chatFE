@@ -3,12 +3,13 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { signout } from '../../store/actions/authActions';
+import ParticipantsModal from './ParticipantsModal';
 
 export default function ChatMenu({ thisRoom }) {
   const history = useHistory();
   const dispatch = useDispatch();
+
   const user = useSelector((state) => state.user.user);
-  console.log(thisRoom);
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
@@ -58,15 +59,7 @@ export default function ChatMenu({ thisRoom }) {
             )}
 
             <Menu.Item>
-              {({ active }) => (
-                <button
-                  onClick={() => history.push('/settings')}
-                  className="
-                    text-gray-900 group flex rounded-md items-center w-full px-2 py-2 text-sm"
-                >
-                  Participants
-                </button>
-              )}
+              {({ active }) => <ParticipantsModal room={thisRoom} />}
             </Menu.Item>
             <Menu.Item>
               {({ active }) => (
