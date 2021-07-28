@@ -1,14 +1,6 @@
 import * as actionTypes from "../actions/types";
 const initialState = {
-  chats: [
-    {
-      roomId: "6100487d9b996722dc5addc8",
-      messages: ["كم السعر"],
-      name: "Ahmed",
-    },
-    { roomId: 2, messages: ["مرحبا"], name: "Mohammad" },
-    { roomId: 3, messages: ["Get Andrés on this movie ASAP"], name: "Yanal" },
-  ],
+  chats: null,
 };
 
 const reducer = (state = initialState, action) => {

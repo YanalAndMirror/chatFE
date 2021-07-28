@@ -1,10 +1,10 @@
-import { Menu, Transition } from '@headlessui/react';
-import { Fragment, useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { signout } from '../../store/actions/authActions';
+import { Menu, Transition } from "@headlessui/react";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { signout } from "../../store/actions/authActions";
 
-export default function UserMenu() {
+export default function UserMenu({ socket }) {
   const history = useHistory();
   const dispatch = useDispatch();
   return (
@@ -26,7 +26,7 @@ export default function UserMenu() {
               ></path>
             </svg>
           </div>
-        </Menu.Button>{' '}
+        </Menu.Button>{" "}
       </div>
       <Transition
         as={Fragment}
@@ -42,7 +42,7 @@ export default function UserMenu() {
             <Menu.Item>
               {({ active }) => (
                 <button
-                  onClick={() => history.push('/settings')}
+                  onClick={() => history.push("/settings")}
                   className="
                     text-gray-900 group flex rounded-md items-center w-full px-2 py-2 text-sm"
                 >
@@ -55,7 +55,7 @@ export default function UserMenu() {
                 <button
                   className="
                     text-gray-900 group flex rounded-md items-center w-full px-2 py-2 text-sm"
-                  onClick={() => dispatch(signout(history))}
+                  onClick={() => dispatch(signout(history, socket))}
                 >
                   Logout
                 </button>

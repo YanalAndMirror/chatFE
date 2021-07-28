@@ -19,9 +19,10 @@ export const signin = (phoneNumber, history) => {
     }
   };
 };
-export const signout = (history) => {
+export const signout = (history, socket) => {
   return async (dispatch) => {
     try {
+      socket.disconnect();
       history.push("/");
       dispatch({
         type: actionTypes.SIGNOUT,

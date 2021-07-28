@@ -10,7 +10,9 @@ export default function ContactList({ setRoomId }) {
       roomId={chat._id}
       name={chat.name}
       photo={chat.photo}
-      lastMessage={chat.messages ? chat.messages[chat.messages.length - 1] : ""}
+      lastMessage={
+        chat.messages.length > 0 ? chat.messages[chat.messages.length - 1] : ""
+      }
       setRoomId={setRoomId}
     />
   ));
