@@ -15,7 +15,7 @@ export default function Chat() {
   const [socket, setSocket] = useState(false);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    setSocket(io('http://34.141.93.52:8000'));
+    setSocket(io('34.141.93.52:8000'));
   }, []);
   if (socket && loading === false) {
     setLoading(true);
