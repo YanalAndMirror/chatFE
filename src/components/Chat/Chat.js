@@ -15,7 +15,7 @@ export default function Chat() {
   const [socket, setSocket] = useState(false);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    setSocket(io("localhost:8000"));
+    setSocket(io("34.141.93.52:8000"));
   }, []);
   if (socket && loading === false) {
     setLoading(true);
@@ -25,11 +25,13 @@ export default function Chat() {
       socket.emit("userId", user._id);
       socket.on("message", (message) => {
         // to Do , add sound
+
         dispatch(addMessage(message.roomId, message.content));
       });
     }
   }, [loading]);
   const [roomId, setRoomId] = useState(false);
+  //test
   let chats = useSelector((state) => state.chats.chats);
 
   return (
