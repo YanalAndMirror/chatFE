@@ -1,7 +1,7 @@
 import Login from "./components/Auth/Login";
 import Chat from "./components/Chat/Chat";
 import UserSettings from "./components/Chat/UserSettings";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import "./App.css";
 import { useSelector } from "react-redux";
 

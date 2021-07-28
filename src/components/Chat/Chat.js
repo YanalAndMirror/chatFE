@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import ContactList from "./ContactList";
-import InputField from "./InputField";
 import LeftHeader from "./LeftHeader";
-import MsgsList from "./MsgsList";
-import RightHeader from "./RightHeader";
 import SearchBar from "./SearchBar";
 import { io } from "socket.io-client";
 import Room from "./Room";
 import { useDispatch, useSelector } from "react-redux";
-import { addMessage } from "../../store/actions/chatActions";
+import { addMessage, seeMessage } from "../../store/actions/chatActions";
 export default function Chat() {
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
@@ -23,6 +20,10 @@ export default function Chat() {
   useEffect(() => {
     if (socket) {
       socket.emit("userId", user._id);
+      socket.on("roomSeen", ({ userId, roomId, time }) => {
+        console.log();
+        dispatch(seeMessage(roomId, userId, time));
+      });
       socket.on("message", (message) => {
         // to Do , add sound
 
@@ -31,7 +32,13 @@ export default function Chat() {
     }
   }, [loading]);
   const [roomId, setRoomId] = useState(false);
-  //test
+
+  useEffect(() => {
+    if (socket && roomId) {
+      console.log("here");
+      socket.emit("roomSeen", { userId: user._id, roomId });
+    }
+  }, [roomId]);
   let chats = useSelector((state) => state.chats.chats);
 
   return (

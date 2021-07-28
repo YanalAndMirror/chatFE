@@ -13,10 +13,20 @@ export const addMessage = (roomId, content) => {
     }
   };
 };
-
+export const seeMessage = (roomId, userId, time) => {
+  return async (dispatch) => {
+    try {
+      dispatch({
+        type: actionTypes.SEEN_MESSAGE,
+        payload: { roomId, userId, time },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
 export const createRoom = (room, userId) => {
   return async (dispatch) => {
-    console.log(room);
     try {
       if (room.type !== "Private") {
         room.admin = userId;
@@ -25,9 +35,16 @@ export const createRoom = (room, userId) => {
       for (const key in room) formData.append(key, room[key]);
 
       const res = await instance.post(`/api/v1/rooms/user/${userId}`, formData);
+      let thisRoom = res.data;
+      if (thisRoom.type === "Private") {
+        let otherUser = thisRoom.users.find((user) => user._id !== userId);
+        if (otherUser.userName === "") thisRoom.name = otherUser.phoneNumber;
+        else thisRoom.name = otherUser.userName;
+        thisRoom.photo = otherUser.photo;
+      }
       dispatch({
         type: actionTypes.CREATE_ROOM,
-        payload: res.data,
+        payload: thisRoom,
       });
     } catch (error) {
       console.log(error);
