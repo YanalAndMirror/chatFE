@@ -36,9 +36,9 @@ export const createRoom = (room, userId) => {
 
       const res = await instance.post(`/api/v1/rooms/user/${userId}`, formData);
       let thisRoom = res.data;
-      if (thisRoom.type === "Private") {
+      if (thisRoom.type === 'Private') {
         let otherUser = thisRoom.users.find((user) => user._id !== userId);
-        if (otherUser.userName === "") thisRoom.name = otherUser.phoneNumber;
+        if (otherUser.userName === '') thisRoom.name = otherUser.phoneNumber;
         else thisRoom.name = otherUser.userName;
         thisRoom.photo = otherUser.photo;
       }
@@ -126,6 +126,20 @@ export const fetchRoom = (userId) => {
       dispatch({
         type: actionTypes.FETCH_ROOM,
         payload: rooms,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const fetchChannels = () => {
+  return async (dispatch) => {
+    try {
+      const res = await instance.get(`api/v1/rooms/channels`);
+      dispatch({
+        type: actionTypes.FETCH_CHANNELS,
+        payload: res.data,
       });
     } catch (error) {
       console.log(error);

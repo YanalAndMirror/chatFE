@@ -2,13 +2,15 @@ import React from 'react';
 import nophoto from '../../assets/no-photo.png';
 import ChatMenu from './ChatMenu';
 import ParticipantsModal from './ParticipantsModal';
-import { MdSettings } from 'react-icons/md';
 import { FaSearch } from 'react-icons/fa';
 import RoomSettingsModal from './RoomSettingsModal';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { GoSignOut } from 'react-icons/go';
+import { removeUserFromGroup } from '../../store/actions/chatActions';
 
 export default function RightHeader({ thisRoom }) {
   const user = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
   const membersList = thisRoom.users.map((_user) =>
     _user.userName === '' ? _user.phoneNumber : _user.userName
   );
@@ -25,11 +27,9 @@ export default function RightHeader({ thisRoom }) {
           <div class="ml-4">
             <p class="text-grey-darkest">{thisRoom.name}</p>
             <p class="text-grey-darker text-xs mt-1">
-              {thisRoom.type === 'Group' ? (
-                <>{membersList.join(', ')}</>
-              ) : (
-                'Online'
-              )}
+              {thisRoom.type === 'Group' && <>{membersList.join(', ')}</>}
+              {thisRoom.type === 'Private' && <>Online</>}
+              {thisRoom.type === 'Channel' && <>{membersList.length} Member</>}
             </p>
           </div>
         </div>
@@ -40,6 +40,18 @@ export default function RightHeader({ thisRoom }) {
           </div>
           <ParticipantsModal room={thisRoom} />
           {thisRoom.admin === user.id && <RoomSettingsModal room={thisRoom} />}
+          {thisRoom.admin !== user.id && thisRoom.type === 'Channel' && (
+            <>
+              <GoSignOut
+                onClick={() => {
+                  dispatch(removeUserFromGroup(thisRoom.id, user.phoneNumber));
+                }}
+                color="#1A237E"
+                size="24px"
+                className="cursor-pointer ml-4"
+              />
+            </>
+          )}
         </div>
       </div>
     </div>

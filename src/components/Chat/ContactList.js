@@ -1,24 +1,59 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import ContactItem from "./ContactItem";
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import ContactItem from './ContactItem';
+import SearchBar from './SearchBar';
 
 export default function ContactList({ setRoomId }) {
+  const [query, setQuery] = useState('');
+
   let chats = useSelector((state) => state.chats.chats);
-  console.log(chats);
-  chats = chats.map((chat) => (
-    <ContactItem
-      roomId={chat._id}
-      name={chat.name}
-      photo={chat.photo}
-      lastMessage={
-        chat.messages.length > 0 ? chat.messages[chat.messages.length - 1] : ""
-      }
-      setRoomId={setRoomId}
-    />
-  ));
+  let channels = useSelector((state) => state.chats.channels);
+
+  channels = channels
+    .filter(
+      (channel) =>
+        channel.name.toLowerCase().includes(query) && query.length > 2
+    )
+    .map((channel) => (
+      <ContactItem
+        roomId={channel.id}
+        name={channel.name}
+        photo={channel.photo}
+        lastMessage={
+          channel.messages.length > 0
+            ? channel.messages[channel.messages.length - 1]
+            : ''
+        }
+        setRoomId={setRoomId}
+      />
+    ));
+
+  chats = chats
+    .filter((chat) => chat.name.toLowerCase().includes(query))
+    .map((chat) => (
+      <ContactItem
+        roomId={chat._id}
+        name={chat.name}
+        photo={chat.photo}
+        lastMessage={
+          chat.messages.length > 0
+            ? chat.messages[chat.messages.length - 1]
+            : ''
+        }
+        setRoomId={setRoomId}
+      />
+    ));
   return (
-    <div>
-      <div class="bg-grey-lighter flex-1 overflow-auto">{chats}</div>
-    </div>
+    <>
+      <SearchBar setQuery={setQuery} />
+
+      <div>
+        <div class="bg-grey-lighter flex-1 overflow-auto">{chats}</div>
+      </div>
+      <center>- Channels -</center>
+      <div>
+        <div class="bg-grey-lighter flex-1 overflow-auto">{channels}</div>
+      </div>
+    </>
   );
 }

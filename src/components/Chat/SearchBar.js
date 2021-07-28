@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function SearchBar() {
+export default function SearchBar({ setQuery }) {
   return (
     <div>
       <div class="py-2 px-2 bg-grey-lightest">
@@ -8,6 +8,7 @@ export default function SearchBar() {
           type="text"
           class="w-full px-2 py-2 text-sm"
           placeholder="Search or start new chat"
+          onChange={(event) => setQuery(event.target.value)}
         />
       </div>
     </div>

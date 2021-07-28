@@ -1,6 +1,7 @@
-import * as actionTypes from "../actions/types";
+import * as actionTypes from '../actions/types';
 const initialState = {
   chats: null,
+  channels: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -37,6 +38,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         chats: newChatAfterMessage,
+      };
+    }
+    case actionTypes.FETCH_CHANNELS: {
+      return {
+        ...state,
+        channels: action.payload,
       };
     }
     case actionTypes.SEEN_MESSAGE: {
