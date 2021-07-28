@@ -14,8 +14,8 @@ export default function LeftHeader({ socket }) {
             src={user.photo === "no-photo.jpg" ? nophoto : user.photo}
           />
           {" " + (user.userName ?? user.phonenumber)}
+          {/* why the extra space? */}
         </div>
-
         <div class="flex">
           <div class="ml-4">
             <NewRoomModal />

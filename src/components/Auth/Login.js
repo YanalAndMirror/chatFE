@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; // REVIEW: you dont need to import React
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import loginImage from "../../assets/loginImage.svg";
 import { signin } from "../../store/actions/authActions";
+// REVIEW: Add comments to all your imports
 export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState();
   const history = useHistory();
@@ -25,6 +26,7 @@ export default function Login() {
             id="email"
             type="text"
             autofocus
+            // REVIEW: Remove {}
             onChange={(event) => {
               setPhoneNumber(event.target.value);
             }}

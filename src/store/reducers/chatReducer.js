@@ -13,6 +13,7 @@ const reducer = (state = initialState, action) => {
     }
     case actionTypes.ADD_MESSAGE: {
       let newChatAfterMessage = state.chats.map((chat) => {
+        // REVIEW: clean this up to a ternary operator
         if (action.payload.roomId === chat._id)
           return {
             ...chat,

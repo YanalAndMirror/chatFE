@@ -4,6 +4,7 @@ import OutcomingMsg from "./OutcomingMsg";
 
 export default function MsgsList({ messages }) {
   let roomMessages = messages.map((message) => (
+    // what the hell is this???
     <>
       <IncomingMsg message={message} />
       <br />

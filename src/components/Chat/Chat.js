@@ -1,29 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import ContactList from './ContactList';
-import InputField from './InputField';
-import LeftHeader from './LeftHeader';
-import MsgsList from './MsgsList';
-import RightHeader from './RightHeader';
-import SearchBar from './SearchBar';
-import { io } from 'socket.io-client';
-import Room from './Room';
-import { useDispatch, useSelector } from 'react-redux';
-import { addMessage } from '../../store/actions/chatActions';
+import React, { useEffect, useState } from "react";
+import ContactList from "./ContactList";
+import InputField from "./InputField";
+import LeftHeader from "./LeftHeader";
+import MsgsList from "./MsgsList";
+import RightHeader from "./RightHeader";
+import SearchBar from "./SearchBar";
+import { io } from "socket.io-client";
+import Room from "./Room";
+import { useDispatch, useSelector } from "react-redux";
+import { addMessage } from "../../store/actions/chatActions";
+
+// REVIEW: Add a breathing space between imports and component
+// REVIEW: Remove unused components
 export default function Chat() {
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const [socket, setSocket] = useState(false);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    setSocket(io('http://34.141.93.52:8000'));
+    setSocket(io("http://34.141.93.52:8000"));
   }, []);
   if (socket && loading === false) {
+    // REVIEW: !loading instead of === false
+
     setLoading(true);
   }
   useEffect(() => {
     if (socket) {
-      socket.emit('userId', user._id);
-      socket.on('message', (message) => {
+      socket.emit("userId", user._id);
+      socket.on("message", (message) => {
         // to Do , add sound
         dispatch(addMessage(message.roomId, message.content));
       });
@@ -31,14 +36,15 @@ export default function Chat() {
   }, [loading]);
   const [roomId, setRoomId] = useState(false);
   let chats = useSelector((state) => state.chats.chats);
-
+  // REVIEW: Keep your component organized, all useState under each other, same for useSelector
   return (
     <>
+      {/* Since the whole JSX is in the component this condition should be beofre the return */}
       {chats && (
         <div>
-          <div class="w-full h-32" style={{ backgroundColor: '#312E81' }}></div>
+          <div class="w-full h-32" style={{ backgroundColor: "#312E81" }}></div>
 
-          <div class="container mx-auto" style={{ marginTop: '-128px' }}>
+          <div class="container mx-auto" style={{ marginTop: "-128px" }}>
             <div class="py-6 h-screen">
               <div class="flex border border-grey rounded shadow-lg h-full">
                 {/* <!-- Left --> */}

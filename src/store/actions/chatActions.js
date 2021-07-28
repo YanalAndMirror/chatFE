@@ -16,7 +16,7 @@ export const addMessage = (roomId, content) => {
 
 export const createRoom = (room, userId) => {
   return async (dispatch) => {
-    console.log(room);
+    console.log(room); // REVIEW: Remove console log if done testing
     try {
       if (room.type !== "Private") {
         room.admin = userId;

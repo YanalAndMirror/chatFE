@@ -5,8 +5,9 @@ import { fetchRoom } from "./chatActions";
 export const signin = (phoneNumber, history) => {
   return async (dispatch) => {
     try {
+      // REVIEW: Why not move `/api/v1` to instance.js?
       const res = await instance.post(`/api/v1/users/login`, {
-        phoneNumber: phoneNumber,
+        phoneNumber: phoneNumber, // change to phoneNumber
       });
       dispatch(fetchRoom(res.data._id));
       history.push("/");

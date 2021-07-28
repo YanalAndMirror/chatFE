@@ -25,6 +25,7 @@ export default function ContactItem({
               {lastMessage.createdAt
                 ? new Date(lastMessage.createdAt).toString().substr(15, 6)
                 : ""}
+              {/* Use && */}
             </p>
           </div>
           <p class="text-grey-dark mt-1 text-sm">{lastMessage.content}</p>
