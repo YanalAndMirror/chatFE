@@ -41,18 +41,22 @@ export default function ChatMenu({ thisRoom }) {
       >
         <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="px-1 py-1 ">
-            {user._id === thisRoom.admin ? <></> : <></>}
-            <Menu.Item>
-              {({ active }) => (
-                <button
-                  onClick={() => history.push('/settings')}
-                  className="
+            {user._id === thisRoom.admin && (
+              <>
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      onClick={() => history.push('/settings')}
+                      className="
                     text-gray-900 group flex rounded-md items-center w-full px-2 py-2 text-sm"
-                >
-                  Settings
-                </button>
-              )}
-            </Menu.Item>
+                    >
+                      Settings
+                    </button>
+                  )}
+                </Menu.Item>{' '}
+              </>
+            )}
+
             <Menu.Item>
               {({ active }) => (
                 <button
