@@ -8,7 +8,6 @@ export default function ContactItem({
   setRoomId,
   roomId,
 }) {
-  console.log(lastMessage);
   return (
     <div onClick={() => setRoomId(roomId)}>
       <div class="px-3 flex items-center hover:bg-grey-light cursor-pointer">

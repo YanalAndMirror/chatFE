@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { addUserToGroup } from '../../store/actions/chatActions';
-import InputField from './InputField';
-import MsgsList from './MsgsList';
-import RightHeader from './RightHeader';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addUserToGroup } from "../../store/actions/chatActions";
+import InputField from "./InputField";
+import MsgsList from "./MsgsList";
+import RightHeader from "./RightHeader";
 
 export default function Room({ roomId, socket }) {
   const dispatch = useDispatch();
@@ -21,12 +21,16 @@ export default function Room({ roomId, socket }) {
         {/* <!-- Header --> */}
         <RightHeader thisRoom={thisRoom} />
         {/* <!-- Messages --> */}
-        <MsgsList messages={thisRoom.messages ?? []} />
+        <MsgsList
+          messages={thisRoom.messages}
+          type={thisRoom.type}
+          user={user}
+        />
         {/* <!-- Input --> */}
-        {thisRoom.type === 'Channel' && thisRoom.admin === user.id && (
+        {thisRoom.type === "Channel" && thisRoom.admin === user.id && (
           <InputField roomId={roomId} socket={socket} />
         )}
-        {thisRoom.type === 'Channel' &&
+        {thisRoom.type === "Channel" &&
           !thisRoom.users.map((u) => u.id).includes(user.id) && (
             <center
               onClick={() => dispatch(addUserToGroup(roomId, user.phoneNumber))}
@@ -36,7 +40,7 @@ export default function Room({ roomId, socket }) {
             </center>
           )}
 
-        {thisRoom.type !== 'Channel' && (
+        {thisRoom.type !== "Channel" && (
           <InputField roomId={roomId} socket={socket} />
         )}
       </div>

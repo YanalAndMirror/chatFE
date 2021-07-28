@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import ContactItem from './ContactItem';
-import SearchBar from './SearchBar';
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import ContactItem from "./ContactItem";
+import SearchBar from "./SearchBar";
 
 export default function ContactList({ setRoomId }) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   let chats = useSelector((state) => state.chats.chats);
   let channels = useSelector((state) => state.chats.channels);
 
+  chats.sort((a, b) =>
+    a.messages[a.messages.length - 1].createdAt >
+    b.messages[b.messages.length - 1].createdAt
+      ? -1
+      : 1
+  );
   channels = channels
     .filter(
       (channel) =>
@@ -22,7 +28,7 @@ export default function ContactList({ setRoomId }) {
         lastMessage={
           channel.messages.length > 0
             ? channel.messages[channel.messages.length - 1]
-            : ''
+            : ""
         }
         setRoomId={setRoomId}
       />
@@ -38,7 +44,7 @@ export default function ContactList({ setRoomId }) {
         lastMessage={
           chat.messages.length > 0
             ? chat.messages[chat.messages.length - 1]
-            : ''
+            : ""
         }
         setRoomId={setRoomId}
       />
