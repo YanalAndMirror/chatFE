@@ -6,10 +6,10 @@ export default function ContactItem({
   name,
   lastMessage,
   setRoomId,
-  roomId,
+  room,
 }) {
   return (
-    <div onClick={() => setRoomId(roomId)}>
+    <div onClick={() => setRoomId(room._id)}>
       <div class="px-3 flex items-center hover:bg-grey-light cursor-pointer">
         <div>
           <img

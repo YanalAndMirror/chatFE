@@ -51,7 +51,7 @@ export default function ContactList({ setRoomId }) {
     .filter((chat) => chat.name.toLowerCase().includes(query))
     .map((chat) => (
       <ContactItem
-        roomId={chat._id}
+        room={chat}
         name={chat.name}
         photo={chat.photo}
         lastMessage={
