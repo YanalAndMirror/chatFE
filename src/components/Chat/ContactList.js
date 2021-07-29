@@ -9,12 +9,25 @@ export default function ContactList({ setRoomId }) {
   let chats = useSelector((state) => state.chats.chats);
   let channels = useSelector((state) => state.chats.channels);
 
-  chats.sort((a, b) =>
-    a.messages[a.messages.length - 1].createdAt >
-    b.messages[b.messages.length - 1].createdAt
+  chats.sort((a, b) => {
+    // if no messages in both rooms then order by room creation
+    if (
+      !a.messages[a.messages.length - 1] &&
+      !b.messages[b.messages.length - 1]
+    )
+      return a.createdAt > b.createdAt ? -1 : 1;
+    // if room a have no messages compare room a creation with last message from b
+    if (!a.messages[a.messages.length - 1])
+      return a.createdAt > b.messages[b.messages.length - 1].createdAt ? -1 : 1;
+    // if room b have no messages compare room b creation with last message from a
+    if (!b.messages[b.messages.length - 1])
+      return a.messages[a.messages.length - 1].createdAt > b.createdAt ? -1 : 1;
+    // compare last messages from both rooms
+    return a.messages[a.messages.length - 1].createdAt >
+      b.messages[b.messages.length - 1].createdAt
       ? -1
-      : 1
-  );
+      : 1;
+  });
   channels = channels
     .filter(
       (channel) =>

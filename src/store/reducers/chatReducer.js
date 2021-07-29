@@ -1,4 +1,4 @@
-import * as actionTypes from '../actions/types';
+import * as actionTypes from "../actions/types";
 const initialState = {
   chats: null,
   channels: null,
@@ -26,13 +26,17 @@ const reducer = (state = initialState, action) => {
     }
     case actionTypes.ADD_MESSAGE: {
       let newChatAfterMessage = state.chats.map((chat) => {
-        if (action.payload.roomId === chat._id)
-          return {
-            ...chat,
-            messages: chat.messages
-              ? [...chat.messages, action.payload.content]
-              : [action.payload.content],
-          };
+        if (action.payload.roomId === chat._id) {
+          const thisMessage = chat.messages.find(
+            (message) => message._id === action.payload.content._id
+          );
+          if (!thisMessage) {
+            return {
+              ...chat,
+              messages: [...chat.messages, action.payload.content],
+            };
+          }
+        }
         return chat;
       });
       return {
