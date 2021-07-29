@@ -34,15 +34,6 @@ export default function MessageModel({ isOpen, setIsOpen, socket }) {
 
   return (
     <>
-      <div class="ml-6">
-        <FaUsers
-          onClick={openModal}
-          color="#1A237E"
-          size="24px"
-          className="cursor-pointer"
-        />
-      </div>
-
       <Transition appear show={isOpen ? true : false} as={Fragment}>
         <Dialog
           as="div"
