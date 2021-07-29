@@ -35,7 +35,7 @@ export default function ContactList({ setRoomId }) {
     )
     .map((channel) => (
       <ContactItem
-        roomId={channel.id}
+        room={channel}
         name={channel.name}
         photo={channel.photo}
         lastMessage={

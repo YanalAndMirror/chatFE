@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ContactList from './ContactList';
-import LeftHeader from './LeftHeader';
-import SearchBar from './SearchBar';
+import LeftHeader from './LeftHeader/LeftHeader';
 import { io } from 'socket.io-client';
 import Room from './Room';
 import { useDispatch, useSelector } from 'react-redux';
