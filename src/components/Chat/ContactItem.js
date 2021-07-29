@@ -26,7 +26,11 @@ export default function ContactItem({
                 : ""}
             </p>
           </div>
-          <p class="text-grey-dark mt-1 text-sm">{lastMessage.content}</p>
+          <p class="text-grey-dark mt-1 text-sm">
+            {typeof lastMessage.content === "string" || !lastMessage.content
+              ? lastMessage.content
+              : lastMessage.content.text ?? `[${lastMessage.content.type}]`}
+          </p>
         </div>
       </div>
     </div>

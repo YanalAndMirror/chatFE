@@ -74,6 +74,38 @@ const reducer = (state = initialState, action) => {
         ),
       };
     }
+    case actionTypes.UPDATE_MESSAGE: {
+      let updatedRoom = state.chats.find(
+        (chat) => action.payload.roomId === chat._id
+      );
+      updatedRoom.messages = updatedRoom.messages.map((message) => {
+        if (message._id === action.payload.newMessage._id) {
+          return action.payload.newMessage;
+        }
+        return message;
+      });
+      console.log(updatedRoom.messages);
+      return {
+        ...state,
+        chats: state.chats.map((chat) =>
+          action.payload.roomId === chat._id ? updatedRoom : chat
+        ),
+      };
+    }
+    case actionTypes.DELETE_MESSAGE: {
+      let deletedFromRoom = state.chats.find(
+        (chat) => action.payload.roomId === chat._id
+      );
+      deletedFromRoom.messages = deletedFromRoom.messages.filter(
+        (message) => message._id !== action.payload.messageId
+      );
+      return {
+        ...state,
+        chats: state.chats.map((chat) =>
+          action.payload.roomId === chat._id ? deletedFromRoom : chat
+        ),
+      };
+    }
     default:
       return state;
   }

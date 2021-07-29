@@ -2,16 +2,56 @@ import React, { useState } from "react";
 import { GoCheck } from "react-icons/go";
 import { BiCheckDouble } from "react-icons/bi";
 import { IoIosArrowDown } from "react-icons/io";
+import { MdNotInterested } from "react-icons/md";
 
-export default function IncomingMsg({ message, type, user }) {
+import { useDispatch } from "react-redux";
+import { deleteMessage } from "../../store/actions/chatActions";
+
+export default function IncomingMsg({
+  message,
+  type,
+  user,
+  setIsOpen,
+  roomId,
+}) {
+  const dispatch = useDispatch();
   const [isShown, setIsShown] = useState(false);
   const [menu, setMenu] = useState(false);
-  let text = message.content;
+  // Get message text
+  let text;
+  let messageType;
+  if (message.content.type) {
+    messageType = message.content.type;
+  } else {
+    messageType = "text";
+  }
+  if (messageType === "text") {
+    text = message.content;
+  } else if (messageType === "deleted") {
+    text = (
+      <il class="text-gray-500">
+        <div className="inline-flex">
+          <MdNotInterested />
+        </div>{" "}
+        This message was deleted
+      </il>
+    );
+  } else {
+    text = message.content.text;
+  }
+
+  // Check if sender is the user
   let sameUser = user._id === message.user._id;
+
+  // Check who saw the message from the receivers
   let seenBy = message.receivers.filter((receiver) => receiver.seen !== null);
+
+  // Check who recived the message from receivers
   let receivedBy = message.receivers.filter(
     (receiver) => receiver.received !== null
   );
+
+  // Set Seen check based on seenBy/recivedBy;
   let seenStatus = "";
   if (sameUser) {
     if (seenBy.length === message.receivers.length) {
@@ -34,6 +74,8 @@ export default function IncomingMsg({ message, type, user }) {
       );
     }
   }
+
+  // Dropdown menu
   const myMenu = true;
   const openMenu = () => {
     setMenu(true);
@@ -57,7 +99,11 @@ export default function IncomingMsg({ message, type, user }) {
         onMouseLeave={() => (menu ? "" : setIsShown(false))}
         class={
           " m-1.5 w-auto md:w-" +
-          (1 + Math.min(Math.floor(text.length / 4), 6)) +
+          (1 +
+            Math.min(
+              Math.floor((isNaN(text.length) ? 16 : text.length) / 4),
+              6
+            )) +
           "/12 right-0  rounded py-1 px-3"
         }
         style={{ backgroundColor: sameUser ? "#E2F7CB" : "#F2F2F2" }}
@@ -72,8 +118,8 @@ export default function IncomingMsg({ message, type, user }) {
         ) : (
           ""
         )}
-        {isShown && (
-          <span className="float-right" onClick={openMenu}>
+        {messageType !== "deleted" && isShown && (
+          <span className="float-right cursor-pointer" onClick={openMenu}>
             <IoIosArrowDown />
           </span>
         )}
@@ -85,20 +131,44 @@ export default function IncomingMsg({ message, type, user }) {
             tabindex="-1"
           >
             <div class="py-1" role="none">
-              <a
-                href="#"
-                class="text-gray-700 block px-4 py-2 text-sm"
+              {sameUser && (
+                <span
+                  onMouseDown={() =>
+                    setIsOpen({ roomId, message, text, type: "Edit" })
+                  }
+                  class="text-gray-700 block px-4 py-2 text-sm cursor-pointer"
+                  tabindex="-1"
+                >
+                  Edit
+                </span>
+              )}
+              <span
+                onMouseDown={() =>
+                  dispatch(deleteMessage(user._id, message._id, roomId))
+                }
+                class="text-gray-700 block px-4 py-2 text-sm cursor-pointer"
                 tabindex="-1"
-                id="menu-item-0"
               >
-                Edit
-              </a>
+                Delete
+              </span>
+              {sameUser && (
+                <span
+                  onMouseDown={() => {
+                    setIsOpen({ roomId, message, text, type: "DeleteAll" });
+                  }}
+                  class="text-gray-700 block px-4 py-2 text-sm cursor-pointer"
+                  tabindex="-1"
+                >
+                  Delete for All
+                </span>
+              )}
             </div>
           </div>
         )}
         <p class="text-sm mt-1">{text}</p>
 
         <p class="text-right text-xs text-grey-dark mt-1">
+          {messageType === "edited" ? "Edited" : ""}
           {new Date(message.createdAt).toString().substr(15, 6) + " "}
           {seenStatus}
         </p>
