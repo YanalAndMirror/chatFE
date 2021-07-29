@@ -1,27 +1,30 @@
-import { Dialog, Transition, RadioGroup } from '@headlessui/react';
+// react imports
 import { Fragment, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useDropzone } from 'react-dropzone';
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { updateUserData } from '../../store/actions/userActions';
+import { useDispatch, useSelector } from 'react-redux';
+
+// assets imports
+import { GoSignOut } from 'react-icons/go';
+import { RiRefreshLine } from 'react-icons/ri';
 import { MdSettings } from 'react-icons/md';
 
-export default function UserSettings() {
-  const user = useSelector((state) => state.user.user);
+// actions imports
+import { updateUserData } from '../../../store/actions/userActions';
+import { signout } from '../../../store/actions/authActions';
+
+// UI imports
+import { Dialog, Transition } from '@headlessui/react';
+
+// utils Imports
+import { useDropzone } from 'react-dropzone';
+
+export default function UserSettingsModal({ socket }) {
+  // utils constants
   const history = useHistory();
   const dispatch = useDispatch();
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    dispatch(updateUserData(userData, history));
-    closeModal();
-  };
-  const [userData, setUserData] = useState({
-    phoneNumber: user.phoneNumber,
-    id: user.id,
-    userName: user.userName,
-  });
 
+  // start dropzone styling //
   const thumbsContainer = {
     display: 'flex',
     flexDirection: 'row',
@@ -52,16 +55,20 @@ export default function UserSettings() {
     width: 'auto',
     height: '100%',
   };
+  // - end dropzone styling - //
+
+  // fetching store
+  const user = useSelector((state) => state.user.user);
+
+  // Hooks
+  const [userData, setUserData] = useState({
+    phoneNumber: user.phoneNumber,
+    id: user.id,
+    userName: user.userName,
+  });
   let [isOpen, setIsOpen] = useState(false);
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  function openModal() {
-    setIsOpen(true);
-  }
-
   const [files, setFiles] = useState([]);
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: 'image/*',
     onDrop: (acceptedFiles) => {
@@ -77,14 +84,6 @@ export default function UserSettings() {
     },
   });
 
-  const thumbs = files.map((file) => (
-    <div style={thumb} key={file.name}>
-      <div style={thumbInner}>
-        <img src={file.preview} style={img} />
-      </div>
-    </div>
-  ));
-
   useEffect(
     () => () => {
       // Make sure to revoke the data uris to avoid memory leaks
@@ -93,8 +92,32 @@ export default function UserSettings() {
     [files]
   );
 
+  // functions
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    dispatch(updateUserData(userData, history));
+    closeModal();
+  };
+
+  const thumbs = files.map((file) => (
+    <div style={thumb} key={file.name}>
+      <div style={thumbInner}>
+        <img src={file.preview} style={img} />
+      </div>
+    </div>
+  ));
+
   return (
     <>
+      {/* // Settings Icon // */}
       <div>
         <div class="ml-1">
           <MdSettings
@@ -106,6 +129,7 @@ export default function UserSettings() {
         </div>
       </div>
 
+      {/* // Modal Start // */}
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -148,10 +172,6 @@ export default function UserSettings() {
                 >
                   Profile Settings
                 </Dialog.Title>
-                {/* // */}
-                <br />
-
-                {/* // */}
 
                 <div className="mt-4">
                   <form onSubmit={handleSubmit}>
@@ -189,13 +209,33 @@ export default function UserSettings() {
                         <aside style={thumbsContainer}>{thumbs}</aside>
                       </section>{' '}
                     </div>
-
+                    {/* Update Button */}
                     <button
                       type="button"
                       className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-900 border border-transparent rounded-md hover:bg-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
                       onClick={handleSubmit}
                     >
+                      {/* Update Icon */}
+                      <RiRefreshLine
+                        color="#FFFFFF"
+                        size="16px"
+                        className="mr-1 cursor-pointer"
+                      />
                       Update
+                    </button>
+                    {/* Signout Button */}
+                    <button
+                      type="button"
+                      className="ml-2 inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-900 border border-transparent rounded-md hover:bg-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                      onClick={() => dispatch(signout(history, socket))}
+                    >
+                      {/* Signout Icon */}
+                      <GoSignOut
+                        color="#FFFFFF"
+                        size="16px"
+                        className="mr-1 cursor-pointer"
+                      />
+                      Logout
                     </button>
                   </form>
                 </div>
@@ -204,6 +244,7 @@ export default function UserSettings() {
           </div>
         </Dialog>
       </Transition>
+      {/* // Modal end // */}
     </>
   );
 }

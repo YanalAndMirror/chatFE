@@ -1,12 +1,20 @@
-import { Dialog, Transition, RadioGroup } from '@headlessui/react';
-import { Fragment, useState } from 'react';
+// React imports
+import { useEffect, Fragment, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createRoom } from '../../store/actions/chatActions';
+
+// UI imports
+import { Dialog, Transition, RadioGroup } from '@headlessui/react';
+
+// Actions Imports
+import { createRoom } from '../../../store/actions/chatActions';
+
+// utils Imports
 import { useDropzone } from 'react-dropzone';
-import { useEffect } from 'react';
-import Dropzone from 'dropzone';
+
+// Assets Imports
 import { RiMessage2Fill } from 'react-icons/ri';
 
+// Selector options
 const options = [
   {
     name: 'Private',
@@ -21,10 +29,42 @@ const options = [
     details: 'a channel that only you can send to',
   },
 ];
-export default function NewRoomModal() {
-  let [isOpen, setIsOpen] = useState(false);
 
-  //   react Dropzone
+export default function NewRoomModal() {
+  // utils constants
+  const dispatch = useDispatch();
+
+  // store fetching
+  const user = useSelector((state) => state.user.user);
+
+  // hooks
+  let [isOpen, setIsOpen] = useState(false);
+  const [files, setFiles] = useState([]);
+  const [selected, setSelected] = useState(options[0]);
+  const [room, setRoom] = useState({});
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: 'image/*',
+    onDrop: (acceptedFiles) => {
+      setRoom({ ...room, photo: acceptedFiles[0] });
+
+      setFiles(
+        acceptedFiles.map((file) =>
+          Object.assign(file, {
+            preview: URL.createObjectURL(file),
+          })
+        )
+      );
+    },
+  });
+  useEffect(
+    () => () => {
+      // Make sure to revoke the data uris to avoid memory leaks
+      files.forEach((file) => URL.revokeObjectURL(file.preview));
+    },
+    [files]
+  );
+
+  //   react Dropzone styling
   const thumbsContainer = {
     display: 'flex',
     flexDirection: 'row',
@@ -56,22 +96,6 @@ export default function NewRoomModal() {
     height: '100%',
   };
 
-  const [files, setFiles] = useState([]);
-  const { getRootProps, getInputProps } = useDropzone({
-    accept: 'image/*',
-    onDrop: (acceptedFiles) => {
-      setRoom({ ...room, photo: acceptedFiles[0] });
-
-      setFiles(
-        acceptedFiles.map((file) =>
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
-          })
-        )
-      );
-    },
-  });
-
   const thumbs = files.map((file) => (
     <div style={thumb} key={file.name}>
       <div style={thumbInner}>
@@ -79,35 +103,24 @@ export default function NewRoomModal() {
       </div>
     </div>
   ));
-
-  useEffect(
-    () => () => {
-      // Make sure to revoke the data uris to avoid memory leaks
-      files.forEach((file) => URL.revokeObjectURL(file.preview));
-    },
-    [files]
-  );
-
   //   end react Dropzone
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.user);
-  const [selected, setSelected] = useState(options[0]);
 
-  const [room, setRoom] = useState({});
-  function closeModal() {
+  // functions
+  const closeModal = () => {
     setIsOpen(false);
-  }
+  };
 
-  function openModal() {
+  const openModal = () => {
     setIsOpen(true);
-  }
-  const handleSubmit = (event) => {
+  };
+  const handleSubmit = () => {
     dispatch(createRoom({ ...room, type: selected.name }, user.id));
     closeModal();
   };
 
   return (
     <>
+      {/* Create Room Icon */}
       <div>
         <div class="ml-6">
           <RiMessage2Fill
@@ -118,6 +131,7 @@ export default function NewRoomModal() {
           />
         </div>
       </div>
+      {/* // - Modal Start - // */}
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -160,9 +174,8 @@ export default function NewRoomModal() {
                 >
                   Create a conversation
                 </Dialog.Title>
-                {/* // */}
                 <br />
-
+                {/* // - Select menu start - // */}
                 <RadioGroup value={selected} onChange={setSelected}>
                   <RadioGroup.Label className="sr-only">
                     Server size
@@ -220,8 +233,8 @@ export default function NewRoomModal() {
                     ))}
                   </div>
                 </RadioGroup>
-
-                {/* // */}
+                {/* // - Select menu end - // */}
+                {/* // checking room type // */}
                 {selected.name === 'Channel' ? (
                   <></>
                 ) : (
@@ -277,7 +290,7 @@ export default function NewRoomModal() {
                     </div>
                   </>
                 )}
-
+                {/* // create Button // */}
                 <div className="mt-4">
                   <button
                     type="button"
@@ -292,6 +305,7 @@ export default function NewRoomModal() {
           </div>
         </Dialog>
       </Transition>
+      {/* // - Modal End - // */}
     </>
   );
 }
