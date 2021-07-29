@@ -1,14 +1,14 @@
-import { Dialog, Transition, RadioGroup } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { FaUsers } from "react-icons/fa";
-import {
-  addUserToGroup,
-  removeUserFromGroup,
-} from "../../store/actions/chatActions";
+import { useSelector } from "react-redux";
+import Select from "react-select";
 
 export default function MessageModel({ isOpen, setIsOpen, socket }) {
   const [input, setInput] = useState(false);
+  const [select, setSelect] = useState([]);
+  const chats = useSelector((state) => state.chats.chats);
+  const user = useSelector((state) => state.user.user);
+  const options = chats.map((chat) => ({ value: chat._id, label: chat.name }));
 
   function closeModal() {
     setIsOpen(false);
@@ -28,7 +28,16 @@ export default function MessageModel({ isOpen, setIsOpen, socket }) {
       content.text = "[deleted]";
       content.type = "deleted";
       socket.emit("messageUpdate", { messageId: isOpen.message._id, content });
+    } else if (isOpen.type === "forward") {
+      select.forEach((room) => {
+        socket.emit("chatMessage", {
+          roomId: room.value,
+          content: isOpen.message.content,
+          userId: user.id,
+        });
+      });
     }
+
     closeModal();
   };
 
@@ -72,14 +81,28 @@ export default function MessageModel({ isOpen, setIsOpen, socket }) {
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900"
                 >
-                  Message:
+                  To:
                 </Dialog.Title>
-                <div class="m-8 relative space-y-4"> </div>
-                <div className="mt-4">
-                  <form onSubmit={handleAdd}>
+                <form onSubmit={handleAdd}>
+                  <Select
+                    onChange={(e) => setSelect(e)}
+                    isMulti
+                    name="colors"
+                    options={options}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                  />
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-gray-900"
+                  >
+                    Message:
+                  </Dialog.Title>
+
+                  <div className="mt-4">
                     <div class="mb-4 relative">
                       <input
-                        disabled
+                        disabled={isOpen.type !== "Edit"}
                         class="disabled:opacity-500 input border border-gray-400 appearance-none rounded w-full px-3 py-3 pt-3 pb-2 focus focus:border-indigo-600 focus:outline-none active:outline-none active:border-indigo-600"
                         id="phoneNumber"
                         type="text"
@@ -96,11 +119,15 @@ export default function MessageModel({ isOpen, setIsOpen, socket }) {
                         className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-900 border border-transparent rounded-md hover:bg-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
                         onClick={handleAdd}
                       >
-                        {isOpen.type === "Edit" ? "Edit" : "Delete For All"}
+                        {isOpen.type === "Edit"
+                          ? "Edit"
+                          : isOpen.type === "DeleteAll"
+                          ? "Delete For All"
+                          : "Forward"}
                       </button>
                     </center>
-                  </form>
-                </div>
+                  </div>
+                </form>
               </div>
             </Transition.Child>
           </div>

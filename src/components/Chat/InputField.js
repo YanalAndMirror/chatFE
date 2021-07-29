@@ -1,13 +1,33 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
-export default function InputField({ roomId, socket }) {
+import { IoMdClose } from "react-icons/io";
+
+export default function InputField({
+  roomId,
+  socket,
+  input,
+  setInput,
+  setInputReply,
+  inputReply,
+}) {
   const [content, setContent] = useState("");
   const user = useSelector((state) => state.user.user);
   const handleSubmit = (e) => {
+    let content = {};
     e.preventDefault();
-    socket.emit("chatMessage", { roomId, content, userId: user.id });
-    setContent("");
+    content.text = input[roomId];
+    content.type = "string";
+    if (inputReply[roomId]) {
+      content.to = inputReply[roomId];
+    }
+    socket.emit("chatMessage", {
+      roomId,
+      content: content,
+      userId: user.id,
+    });
+    setInput({ ...input, [roomId]: "" });
+    setInputReply({ ...inputReply, [roomId]: null });
   };
   return (
     <div class="bg-grey-lighter px-4 py-4 flex items-center">
@@ -27,11 +47,35 @@ export default function InputField({ roomId, socket }) {
       </div>
       <div class="flex-1 mx-4">
         <form onSubmit={handleSubmit}>
+          {inputReply[roomId] && (
+            <div
+              class="block text-sm text-left  bg-gray-100 border flex-auto border-green-400 h-12  items-center p-1  rounded-sm my-2 "
+              role="alert"
+            >
+              <div
+                class="float-right text-2xl text-green-400 cursor-pointer"
+                onClick={() => setInputReply({ ...inputReply, [roomId]: null })}
+              >
+                <IoMdClose />
+              </div>
+              <p class="text-sm text-teal">
+                <b>
+                  {inputReply[roomId].user.userName &&
+                  inputReply[roomId].user.userName !== ""
+                    ? inputReply[roomId].user.userName
+                    : inputReply[roomId].user.phoneNumber}
+                </b>
+              </p>
+              <p class="text-sm mt-1">
+                {inputReply[roomId].content.text ?? inputReply[roomId].content}
+              </p>
+            </div>
+          )}
           <input
             class="w-full border rounded px-2 py-2"
             type="text"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+            value={input[roomId] ?? ""}
+            onChange={(e) => setInput({ ...input, [roomId]: e.target.value })}
           />
         </form>
       </div>

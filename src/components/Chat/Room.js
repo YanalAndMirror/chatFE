@@ -10,7 +10,9 @@ export default function Room({ roomId, socket }) {
   const dispatch = useDispatch();
 
   const [isOpen, setIsOpen] = useState(false);
-
+  const [input, setInput] = useState({});
+  const [inputReply, setInputReply] = useState({});
+  console.log(inputReply);
   let thisRoom = useSelector((state) =>
     state.chats.chats?.find((chat) => chat._id === roomId)
   );
@@ -33,10 +35,19 @@ export default function Room({ roomId, socket }) {
           type={thisRoom.type}
           user={user}
           setIsOpen={setIsOpen}
+          setInputReply={setInputReply}
+          inputReply={inputReply}
         />
         {/* <!-- Input --> */}
         {thisRoom.type === "Channel" && thisRoom.admin === user.id && (
-          <InputField roomId={roomId} socket={socket} />
+          <InputField
+            input={input}
+            setInput={setInput}
+            roomId={roomId}
+            socket={socket}
+            setInputReply={setInputReply}
+            inputReply={inputReply}
+          />
         )}
         {thisRoom.type === "Channel" &&
           !thisRoom.users.map((u) => u.id).includes(user.id) && (
@@ -49,7 +60,14 @@ export default function Room({ roomId, socket }) {
           )}
 
         {thisRoom.type !== "Channel" && (
-          <InputField roomId={roomId} socket={socket} />
+          <InputField
+            input={input}
+            setInput={setInput}
+            roomId={roomId}
+            socket={socket}
+            setInputReply={setInputReply}
+            inputReply={inputReply}
+          />
         )}
       </div>
     </>

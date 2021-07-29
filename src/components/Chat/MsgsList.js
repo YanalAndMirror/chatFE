@@ -2,7 +2,15 @@ import React from "react";
 import IncomingMsg from "./IncomingMsg";
 import OutcomingMsg from "./OutcomingMsg";
 
-export default function MsgsList({ messages, type, user, setIsOpen, roomId }) {
+export default function MsgsList({
+  messages,
+  type,
+  user,
+  setIsOpen,
+  roomId,
+  setInputReply,
+  inputReply,
+}) {
   let roomMessages = messages.map((message) => (
     <>
       <IncomingMsg
@@ -11,6 +19,8 @@ export default function MsgsList({ messages, type, user, setIsOpen, roomId }) {
         message={message}
         type={type}
         user={user}
+        setInputReply={setInputReply}
+        inputReply={inputReply}
       />
     </>
   ));

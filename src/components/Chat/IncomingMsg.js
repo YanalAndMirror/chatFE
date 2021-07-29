@@ -13,6 +13,8 @@ export default function IncomingMsg({
   user,
   setIsOpen,
   roomId,
+  setInputReply,
+  inputReply,
 }) {
   const dispatch = useDispatch();
   const [isShown, setIsShown] = useState(false);
@@ -131,6 +133,24 @@ export default function IncomingMsg({
             tabindex="-1"
           >
             <div class="py-1" role="none">
+              <span
+                onMouseDown={() =>
+                  setIsOpen({ roomId, message, text, type: "forward" })
+                }
+                class="text-gray-700 block px-4 py-2 text-sm cursor-pointer"
+                tabindex="-1"
+              >
+                Forward
+              </span>
+              <span
+                onMouseDown={() =>
+                  setInputReply({ ...inputReply, [roomId]: message })
+                }
+                class="text-gray-700 block px-4 py-2 text-sm cursor-pointer"
+                tabindex="-1"
+              >
+                Reply
+              </span>
               {sameUser && (
                 <span
                   onMouseDown={() =>
@@ -164,6 +184,11 @@ export default function IncomingMsg({
               )}
             </div>
           </div>
+        )}
+        {message.content.to && (
+          <p class="text-sm mt-1 text-gray-400 px-2 py-1">
+            {message.content.to.content.text ?? message.content.to.content}
+          </p>
         )}
         <p class="text-sm mt-1">{text}</p>
 
