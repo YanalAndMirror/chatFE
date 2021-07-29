@@ -6,6 +6,7 @@ import UserSettings from './UserSettings';
 import { GoSignOut } from 'react-icons/go';
 import { signout } from '../../store/actions/authActions';
 import { useHistory } from 'react-router-dom';
+import { HiSpeakerphone } from 'react-icons/hi';
 
 export default function LeftHeader({ socket }) {
   const user = useSelector((state) => state.user.user);
@@ -23,7 +24,17 @@ export default function LeftHeader({ socket }) {
         </div>
 
         <div class="flex">
-          <div class="ml-4">
+          <div className="">
+            <HiSpeakerphone
+              // onClick={() => {
+              //   dispatch(signout(history, socket));
+              // }}
+              color="#1A237E"
+              size="24px"
+              className="cursor-pointer"
+            />
+          </div>
+          <div class="">
             <NewRoomModal />
           </div>
           <div class="ml-4">
