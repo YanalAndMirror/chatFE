@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import nophoto from '../../../assets/no-photo.png';
 
 // components imports
-import NewRoomModal from '../NewRoomModal';
+import NewRoomModal from './NewRoomModal';
 import UserSettingsModal from './UserSettingsModal';
 
 export default function LeftHeader({ socket }) {
