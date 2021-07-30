@@ -25,6 +25,19 @@ export const seeMessage = (roomId, userId, time) => {
     }
   };
 };
+export const readMessage = (roomIds, userId, time) => {
+  return async (dispatch) => {
+    try {
+      dispatch({
+        type: actionTypes.READ_MESSAGE,
+        payload: { roomIds, userId, time },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
 export const updateMessage = (roomId, newMessage) => {
   return async (dispatch) => {
     try {

@@ -77,21 +77,26 @@ export default function MessageModel({ isOpen, setIsOpen, socket }) {
               leaveTo="opacity-0 scale-95"
             >
               <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                <Dialog.Title
-                  as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
-                >
-                  To:
-                </Dialog.Title>
                 <form onSubmit={handleAdd}>
-                  <Select
-                    onChange={(e) => setSelect(e)}
-                    isMulti
-                    name="colors"
-                    options={options}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                  />
+                  {isOpen.type === "forward" && (
+                    <>
+                      <Dialog.Title
+                        as="h3"
+                        className="text-lg font-medium leading-6 text-gray-900"
+                      >
+                        To:
+                      </Dialog.Title>
+
+                      <Select
+                        onChange={(e) => setSelect(e)}
+                        isMulti
+                        name="colors"
+                        options={options}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                      />
+                    </>
+                  )}
                   <Dialog.Title
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"

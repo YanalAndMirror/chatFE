@@ -12,7 +12,6 @@ export default function Room({ roomId, socket }) {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState({});
   const [inputReply, setInputReply] = useState({});
-  console.log(inputReply);
   let thisRoom = useSelector((state) =>
     state.chats.chats?.find((chat) => chat._id === roomId)
   );

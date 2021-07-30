@@ -74,6 +74,29 @@ const reducer = (state = initialState, action) => {
         ),
       };
     }
+    case actionTypes.READ_MESSAGE: {
+      let readRooms = state.chats.map((chat) => {
+        if (action.payload.roomIds.includes(chat._id)) {
+          chat.messages = chat.messages.map((message) => {
+            message.receivers = message.receivers.map((receiver) => {
+              if (
+                receiver._id === action.payload.userId &&
+                receiver.received === null
+              ) {
+                receiver.received = action.payload.time;
+              }
+              return receiver;
+            });
+            return message;
+          });
+        }
+        return chat;
+      });
+      return {
+        ...state,
+        chats: readRooms,
+      };
+    }
     case actionTypes.UPDATE_MESSAGE: {
       let updatedRoom = state.chats.find(
         (chat) => action.payload.roomId === chat._id

@@ -6,6 +6,7 @@ import Room from "./Room";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addMessage,
+  readMessage,
   seeMessage,
   updateMessage,
 } from "../../store/actions/chatActions";
@@ -22,13 +23,17 @@ export default function Chat() {
   }
   useEffect(() => {
     if (socket) {
-      socket.emit("userId", user._id);
+      socket.emit("startSession", { userId: user._id });
       socket.on("messageUpdate", ({ roomId, newMessage }) => {
         console.log(roomId, newMessage);
         dispatch(updateMessage(roomId, newMessage));
       });
       socket.on("roomSeen", ({ userId, roomId, time }) => {
         dispatch(seeMessage(roomId, userId, time));
+      });
+      socket.on("messageRead", ({ userId, roomIds, time }) => {
+        console.log(roomIds, userId, time);
+        dispatch(readMessage(roomIds, userId, time));
       });
       socket.on("message", (message) => {
         // to Do , add sound

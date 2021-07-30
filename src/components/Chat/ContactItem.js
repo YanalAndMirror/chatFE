@@ -22,7 +22,10 @@ export default function ContactItem({
             <p class="text-grey-darkest">{name}</p>
             <p class="text-xs text-grey-darkest">
               {lastMessage.createdAt
-                ? new Date(lastMessage.createdAt).toString().substr(15, 6)
+                ? new Date().toISOString().substr(0, 10) ===
+                  lastMessage.createdAt.toString().substr(0, 10)
+                  ? lastMessage.createdAt.toString().substr(11, 5)
+                  : lastMessage.createdAt.toString().substr(0, 10)
                 : ""}
             </p>
           </div>

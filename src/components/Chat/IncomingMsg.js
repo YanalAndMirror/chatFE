@@ -127,7 +127,7 @@ export default function IncomingMsg({
         )}
         {menu && (
           <div
-            class="float-right origin-top-right absolute  mt-1 w-15 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+            class="absolute float-right origin-top-right   mt-1 w-15 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
             aria-orientation="vertical"
             aria-labelledby="menu-button"
             tabindex="-1"
