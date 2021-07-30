@@ -6,7 +6,9 @@ import { FaSearch } from 'react-icons/fa';
 import RoomSettingsModal from './RoomSettingsModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { GoSignOut } from 'react-icons/go';
+
 import { removeUserFromGroup } from '../../store/actions/chatActions';
+import VoiceCall from './VoiceCall';
 
 export default function RightHeader({ thisRoom }) {
   const user = useSelector((state) => state.user.user);
@@ -38,6 +40,8 @@ export default function RightHeader({ thisRoom }) {
           <div class="ml-6">
             <FaSearch color="#1A237E" size="24px" className="cursor-pointer" />
           </div>
+          <VoiceCall />
+
           <ParticipantsModal room={thisRoom} />
           {thisRoom.admin === user.id && <RoomSettingsModal room={thisRoom} />}
           {thisRoom.admin !== user.id && thisRoom.type === 'Channel' && (
