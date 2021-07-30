@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
 import { IoMdClose } from "react-icons/io";
+import { AiOutlineGif } from "react-icons/ai";
+
+import Picker from "emoji-picker-react";
+import ReactGiphySearchbox from "react-giphy-searchbox";
 
 export default function InputField({
   roomId,
@@ -11,7 +15,12 @@ export default function InputField({
   setInputReply,
   inputReply,
 }) {
-  const [content, setContent] = useState("");
+  const [chosenEmoji, setChosenEmoji] = useState(null);
+  const [chosenGiphy, setChosenGiphy] = useState(null);
+  const onEmojiClick = (event, emojiObject) => {
+    setInput({ ...input, [roomId]: (input[roomId] ?? "") + emojiObject.emoji });
+    setChosenEmoji(false);
+  };
   const user = useSelector((state) => state.user.user);
   const handleSubmit = (e) => {
     let content = {};
@@ -29,9 +38,30 @@ export default function InputField({
     setInput({ ...input, [roomId]: "" });
     setInputReply({ ...inputReply, [roomId]: null });
   };
+  const handleSubmitAttachment = (e) => {
+    let content = {};
+    content.text = "[GIF]";
+    content.type = "giphy";
+    content.url = e.embed_url;
+    if (inputReply[roomId]) {
+      content.to = inputReply[roomId];
+    }
+    socket.emit("chatMessage", {
+      roomId,
+      content: content,
+      userId: user.id,
+    });
+    setChosenGiphy(false);
+    setInputReply({ ...inputReply, [roomId]: null });
+  };
   return (
     <div class="bg-grey-lighter px-4 py-4 flex items-center">
-      <div>
+      <div
+        onClick={() => {
+          setChosenEmoji(!chosenEmoji);
+          setChosenGiphy(false);
+        }}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -44,6 +74,14 @@ export default function InputField({
             d="M9.153 11.603c.795 0 1.439-.879 1.439-1.962s-.644-1.962-1.439-1.962-1.439.879-1.439 1.962.644 1.962 1.439 1.962zm-3.204 1.362c-.026-.307-.131 5.218 6.063 5.551 6.066-.25 6.066-5.551 6.066-5.551-6.078 1.416-12.129 0-12.129 0zm11.363 1.108s-.669 1.959-5.051 1.959c-3.505 0-5.388-1.164-5.607-1.959 0 0 5.912 1.055 10.658 0zM11.804 1.011C5.609 1.011.978 6.033.978 12.228s4.826 10.761 11.021 10.761S23.02 18.423 23.02 12.228c.001-6.195-5.021-11.217-11.216-11.217zM12 21.354c-5.273 0-9.381-3.886-9.381-9.159s3.942-9.548 9.215-9.548 9.548 4.275 9.548 9.548c-.001 5.272-4.109 9.159-9.382 9.159zm3.108-9.751c.795 0 1.439-.879 1.439-1.962s-.644-1.962-1.439-1.962-1.439.879-1.439 1.962.644 1.962 1.439 1.962z"
           ></path>
         </svg>
+      </div>{" "}
+      <div
+        onClick={() => {
+          setChosenEmoji(false);
+          setChosenGiphy(!chosenGiphy);
+        }}
+      >
+        <AiOutlineGif size={30} />
       </div>
       <div class="flex-1 mx-4">
         <form onSubmit={handleSubmit}>
@@ -71,7 +109,14 @@ export default function InputField({
               </p>
             </div>
           )}
+          {chosenEmoji && (
+            <div class="absolute bottom-20 left-15">
+              <Picker onEmojiClick={onEmojiClick} />
+            </div>
+          )}
+
           <input
+            placeholder="Type a message"
             class="w-full border rounded px-2 py-2"
             type="text"
             value={input[roomId] ?? ""}
@@ -79,6 +124,14 @@ export default function InputField({
           />
         </form>
       </div>
+      {chosenGiphy && (
+        <div class="absolute bottom-20 left-15 bg-grey-lighter">
+          <ReactGiphySearchbox
+            apiKey="comDBd9jh2uM1yBnCT3nXEloN1ox4CrQ" // Required: get your on https://developers.giphy.com
+            onSelect={handleSubmitAttachment}
+          />
+        </div>
+      )}
       <div>
         <svg
           xmlns="http://www.w3.org/2000/svg"

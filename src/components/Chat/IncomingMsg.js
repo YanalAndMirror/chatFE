@@ -38,6 +38,15 @@ export default function IncomingMsg({
         This message was deleted
       </il>
     );
+  } else if (messageType === "giphy") {
+    text = (
+      <iframe
+        src={message.content.url}
+        width="300"
+        height="150"
+        frameBorder="0"
+      ></iframe>
+    );
   } else {
     text = message.content.text;
   }
@@ -127,7 +136,7 @@ export default function IncomingMsg({
         )}
         {menu && (
           <div
-            class="absolute float-right origin-top-right   mt-1 w-15 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+            class="float-right origin-top-right absolute  mt-1 w-15 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
             aria-orientation="vertical"
             aria-labelledby="menu-button"
             tabindex="-1"
