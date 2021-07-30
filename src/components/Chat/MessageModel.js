@@ -18,6 +18,7 @@ export default function MessageModel({ isOpen, setIsOpen, socket }) {
   function openModal() {
     setIsOpen(true);
   }
+  console.log(isOpen);
   const handleAdd = () => {
     let content = {};
     if (isOpen.type === "Edit") {
@@ -112,7 +113,13 @@ export default function MessageModel({ isOpen, setIsOpen, socket }) {
                         id="phoneNumber"
                         type="text"
                         value={
-                          input === false ? (isOpen ? isOpen.text : "") : input
+                          input === false
+                            ? isOpen
+                              ? typeof isOpen.text === "string"
+                                ? isOpen.text
+                                : "[attachment]"
+                              : ""
+                            : input
                         }
                         autofocus
                         onChange={(event) => setInput(event.target.value)}

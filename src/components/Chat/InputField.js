@@ -43,6 +43,7 @@ export default function InputField({
     content.text = "[GIF]";
     content.type = "giphy";
     content.url = e.embed_url;
+    console.log(e);
     if (inputReply[roomId]) {
       content.to = inputReply[roomId];
     }

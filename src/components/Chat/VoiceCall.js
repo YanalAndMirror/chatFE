@@ -1,23 +1,23 @@
-import React, { useEffect, useRef, useState, Fragment } from 'react';
-import { MdCall } from 'react-icons/md';
-import { Dialog, Transition } from '@headlessui/react';
-import Peer from 'simple-peer';
-import io from 'socket.io-client';
-import { useSelector } from 'react-redux';
-import '../../App.css';
-const socket = io.connect('localhost:8000');
+import React, { useEffect, useRef, useState, Fragment } from "react";
+import { MdCall } from "react-icons/md";
+import { Dialog, Transition } from "@headlessui/react";
+import Peer from "simple-peer";
+import io from "socket.io-client";
+import { useSelector } from "react-redux";
+import "../../App.css";
+const socket = io.connect("localhost:8000");
 export default function VoiceCall() {
   const user = useSelector((state) => state.user.user);
 
-  const [me, setMe] = useState('');
+  const [me, setMe] = useState("");
   const [stream, setStream] = useState();
   const [receivingCall, setReceivingCall] = useState(false);
-  const [caller, setCaller] = useState('');
+  const [caller, setCaller] = useState("");
   const [callerSignal, setCallerSignal] = useState();
   const [callAccepted, setCallAccepted] = useState(false);
-  const [idToCall, setIdToCall] = useState('');
+  const [idToCall, setIdToCall] = useState("");
   const [callEnded, setCallEnded] = useState(false);
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   let [isOpen, setIsOpen] = useState(false);
 
   const myVideo = useRef(null);
@@ -35,23 +35,22 @@ export default function VoiceCall() {
   useEffect(() => {
     const getUserMedia = async () => {
       try {
-        navigator.mediaDevices
-          .getUserMedia({ video: true, audio: true })
-          .then((stream) => {
-            setStream(stream);
-            myVideo.current.srcObject = stream;
-          });
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+          setStream(stream);
+          myVideo.current = {};
+          myVideo.current.srcObject = stream;
+        });
       } catch (error) {
         console.log(error);
       }
     };
     getUserMedia();
-    socket.on('me', (id) => {
+    socket.on("me", (id) => {
       setMe(id);
     });
     console.log(socket);
 
-    socket.on('callUser', (data) => {
+    socket.on("callUser", (data) => {
       setReceivingCall(true);
       setCaller(data.from);
       setName(data.name);
@@ -65,18 +64,18 @@ export default function VoiceCall() {
       trickle: false,
       stream: stream,
     });
-    peer.on('signal', (data) => {
-      socket.emit('callUser', {
+    peer.on("signal", (data) => {
+      socket.emit("callUser", {
         userToCall: id,
         signalData: data,
         from: me,
         name: name,
       });
     });
-    peer.on('stream', (stream) => {
+    peer.on("stream", (stream) => {
       userVideo.current.srcObject = stream;
     });
-    socket.on('callAccepted', (signal) => {
+    socket.on("callAccepted", (signal) => {
       setCallAccepted(true);
       peer.signal(signal);
     });
@@ -91,10 +90,10 @@ export default function VoiceCall() {
       trickle: false,
       stream: stream,
     });
-    peer.on('signal', (data) => {
-      socket.emit('answerCall', { signal: data, to: caller });
+    peer.on("signal", (data) => {
+      socket.emit("answerCall", { signal: data, to: caller });
     });
-    peer.on('stream', (stream) => {
+    peer.on("stream", (stream) => {
       userVideo.current.srcObject = stream;
     });
 
@@ -163,7 +162,7 @@ export default function VoiceCall() {
                 >
                   Call
                 </Dialog.Title>
-                <h1 style={{ textAlign: 'center', color: '#fff' }}>Zoomish</h1>
+                <h1 style={{ textAlign: "center", color: "#fff" }}>Zoomish</h1>
                 <div className="container">
                   <div className="video-container">
                     <div className="video">
@@ -173,7 +172,7 @@ export default function VoiceCall() {
                           muted
                           ref={myVideo}
                           autoPlay
-                          style={{ width: '300px' }}
+                          style={{ width: "300px" }}
                         />
                       )}
                     </div>
@@ -183,7 +182,7 @@ export default function VoiceCall() {
                           playsInline
                           ref={userVideo}
                           autoPlay
-                          style={{ width: '300px' }}
+                          style={{ width: "300px" }}
                         />
                       ) : null}
                     </div>
@@ -195,7 +194,7 @@ export default function VoiceCall() {
                       variant="filled"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      style={{ marginBottom: '20px' }}
+                      style={{ marginBottom: "20px" }}
                     />
                     {me}
                     <input
