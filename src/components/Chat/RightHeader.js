@@ -44,6 +44,7 @@ export default function RightHeader({ thisRoom, socket, userVideo, play }) {
             userVideo={userVideo}
             membersList={thisRoom.users}
             play={play}
+            roomId={thisRoom._id}
           />
           <ParticipantsModal room={thisRoom} />
           {thisRoom.admin === user.id && <RoomSettingsModal room={thisRoom} />}

@@ -20,6 +20,7 @@ export default function Chat() {
   const dispatch = useDispatch();
   const [socket, setSocket] = useState(false);
   const [loading, setLoading] = useState(false);
+  const userVideo = useRef(null);
 
   useEffect(() => {
     setSocket(io("localhost:8000"));
@@ -52,7 +53,6 @@ export default function Chat() {
     }
   }, [roomId]);
   let chats = useSelector((state) => state.chats.chats);
-
   return (
     <>
       {chats && (
@@ -67,8 +67,13 @@ export default function Chat() {
                   <LeftHeader socket={socket} />
                   <ContactList setRoomId={setRoomId} />
                 </div>
-
-                {<Room roomId={roomId} socket={socket} play={play} />}
+                <Room
+                  roomId={roomId}
+                  socket={socket}
+                  play={play}
+                  userVideo={userVideo}
+                />
+                )
               </div>
             </div>
           </div>

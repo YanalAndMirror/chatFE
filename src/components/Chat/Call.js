@@ -92,6 +92,7 @@ export default function Call({ socket, userVideo, membersList, roomId, play }) {
         });
         socket.on("peerEnd", ({ data }) => {
           peer.destroy();
+          closeModal();
         });
       });
   };
@@ -115,6 +116,7 @@ export default function Call({ socket, userVideo, membersList, roomId, play }) {
         });
         socket.on("peerEnd", ({ data }) => {
           peer.destroy();
+          closeModal();
         });
       });
   };
@@ -148,7 +150,7 @@ export default function Call({ socket, userVideo, membersList, roomId, play }) {
             <Dialog
               as="div"
               className="fixed inset-0 z-10 overflow-y-auto"
-              onClose={closeModal}
+              onClose={() => {}}
             >
               <div className="min-h-screen px-4 text-center">
                 <Transition.Child
@@ -196,10 +198,7 @@ export default function Call({ socket, userVideo, membersList, roomId, play }) {
                       <button
                         type="button"
                         className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-                        onClick={() => {
-                          socket.emit("endCall", { roomId });
-                          closeModal();
-                        }}
+                        onClick={() => socket.emit("endCall", { roomId })}
                       >
                         End Call
                       </button>
