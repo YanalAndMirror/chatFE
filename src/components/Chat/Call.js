@@ -5,18 +5,26 @@ import { BsFillCameraVideoFill } from "react-icons/bs";
 import { ImPhone } from "react-icons/im";
 import { ImPhoneHangUp } from "react-icons/im";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useRef } from "react";
 
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import VideoCallModal from "./VideoCallModal";
 
-export default function Call({ socket, userVideo, membersList, roomId, play }) {
+export default function Call({
+  socket,
+  userVideo,
+
+  membersList,
+  roomId,
+  play,
+  stop,
+}) {
+  console.log(socket.id);
   const user = useSelector((state) => state.user.user);
   let [isOpen, setIsOpen] = useState(false);
-
+  const userVideo2 = useRef(null);
   function closeModal() {
     setIsOpen(false);
   }
@@ -25,23 +33,33 @@ export default function Call({ socket, userVideo, membersList, roomId, play }) {
     setIsOpen(true);
   }
 
-  const callUser = (touser) => {
-    socket.emit("call", { userId: touser._id, sender: user });
+  const callUser = (touser, video) => {
+    socket.emit("call", { userId: touser._id, sender: user, video });
+    socket.off("callAccept");
+    socket.off("callDecline");
+
     socket.on("callAccept", (data) => {
       console.log(data);
-      startCall(touser._id);
+      startCall(touser._id, video);
+    });
+    socket.on("callDecline", (data) => {
+      console.log(data);
+      closeModal();
     });
   };
   useEffect(() => {
     //
-    socket.on("call", ({ sender }) => {
+    console.log("here");
+    socket.off("call");
+    socket.on("call", ({ sender, video }) => {
       play();
       toast(
         <center>
           <ImPhone
             onClick={() => {
-              acceptCall(sender._id);
+              acceptCall(sender._id, video);
               socket.emit("callAccept", { userId: sender._id });
+              stop();
             }}
             color="#27EE20"
             size="24px"
@@ -50,7 +68,11 @@ export default function Call({ socket, userVideo, membersList, roomId, play }) {
           {sender.userName + " Is Calling" ??
             sender.phoneNumber + " Is Calling"}
           <ImPhoneHangUp
-            onClick={() => {}}
+            onClick={() => {
+              socket.emit("callDecline", { userId: sender._id });
+              toast.dismiss();
+              stop();
+            }}
             color="#E90A0A"
             size="24px"
             className="cursor-pointer ml-4 inline-block"
@@ -68,11 +90,11 @@ export default function Call({ socket, userVideo, membersList, roomId, play }) {
       );
     });
   }, []);
-  const startCall = (userId) => {
+  const startCall = (userId, video) => {
     navigator.mediaDevices
       .getUserMedia({
-        video: true,
         audio: true,
+        video: video,
       })
       .then((stream) => {
         const peer = new Peer({
@@ -80,27 +102,36 @@ export default function Call({ socket, userVideo, membersList, roomId, play }) {
           trickle: false,
           stream: stream,
         });
+        console.log(stream.getTracks());
         peer.on("signal", (data) => {
           socket.emit("peer", { userId, data });
         });
-        peer.on("stream", (stream) => {
-          userVideo.current.srcObject = stream;
+        peer.on("stream", (comingStream) => {
+          userVideo2.current.srcObject = stream;
+          userVideo.current.srcObject = comingStream;
         });
         socket.on("reciverPeer", ({ data }) => {
-          peer.signal(data);
-          console.log("success");
+          if (peer.readable) peer.signal(data);
         });
         socket.on("peerEnd", ({ data }) => {
+          socket.off("callAccept");
+          socket.off("reciverPeer");
+          socket.off("startPeer");
+          socket.off("peerEnd");
+          socket.off("callDecline");
+
           peer.destroy();
+          stream.getTracks().forEach((x) => x.stop());
           closeModal();
         });
       });
   };
-  const acceptCall = (userId) => {
+
+  const acceptCall = (userId, video) => {
     setIsOpen(true);
     navigator.mediaDevices
       .getUserMedia({
-        video: true,
+        video: video,
         audio: true,
       })
       .then((stream) => {
@@ -108,14 +139,22 @@ export default function Call({ socket, userVideo, membersList, roomId, play }) {
         peer.on("signal", (data) => {
           socket.emit("peerRecive", { userId, data });
         });
-        peer.on("stream", (stream) => {
-          userVideo.current.srcObject = stream;
+        peer.on("stream", (comingStream) => {
+          userVideo2.current.srcObject = stream;
+          userVideo.current.srcObject = comingStream;
         });
         socket.on("startPeer", ({ data }) => {
-          peer.signal(data);
+          console.log(peer);
+          if (peer.readable) peer.signal(data);
         });
         socket.on("peerEnd", ({ data }) => {
+          socket.off("callAccept");
+          socket.off("reciverPeer");
+          socket.off("startPeer");
+          socket.off("peerEnd");
+          socket.off("callDecline");
           peer.destroy();
+          stream.getTracks().forEach((x) => x.stop());
           closeModal();
         });
       });
@@ -124,17 +163,27 @@ export default function Call({ socket, userVideo, membersList, roomId, play }) {
     <>
       {membersList.length === 2 && (
         <>
-          <div>
-            <BsFillCameraVideoFill
-              onClick={() => {
-                callUser(membersList.find((member) => member._id !== user.id));
-                setIsOpen(true);
-              }}
-              color="#1A237E"
-              size="24px"
-              className="cursor-pointer ml-4"
-            />
-          </div>
+          <BsFillCameraVideoFill
+            onClick={() => {
+              callUser(
+                membersList.find((member) => member._id !== user.id),
+                true
+              );
+              setIsOpen(true);
+            }}
+            color="#1A237E"
+            size="24px"
+            className="cursor-pointer ml-4"
+          />
+          <MdCall
+            onClick={() => {
+              callUser(membersList.find((member) => member._id !== user.id));
+              setIsOpen(true);
+            }}
+            color="#1A237E"
+            size="24px"
+            className="cursor-pointer ml-4"
+          />
           <ToastContainer
             position="bottom-center"
             autoClose={false}
@@ -186,19 +235,29 @@ export default function Call({ socket, userVideo, membersList, roomId, play }) {
                       as="h3"
                       className="text-lg font-medium leading-6 text-gray-900"
                     >
-                      Video Call
+                      Call
                     </Dialog.Title>
                     <video
                       ref={userVideo}
                       autoPlay
                       style={{ width: "600px" }}
                     />
+                    <center>
+                      <video
+                        ref={userVideo2}
+                        autoPlay
+                        style={{ width: "150px" }}
+                      />
+                    </center>
 
                     <div className="mt-4">
                       <button
                         type="button"
                         className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-                        onClick={() => socket.emit("endCall", { roomId })}
+                        onClick={() => {
+                          socket.emit("endCall", { roomId });
+                          closeModal();
+                        }}
                       >
                         End Call
                       </button>

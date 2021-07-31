@@ -14,7 +14,7 @@ import useSound from "use-sound";
 
 import ringtone from "../../assets/ringtone.mp3";
 export default function Chat() {
-  const [play] = useSound(ringtone);
+  const [play, { stop }] = useSound(ringtone);
 
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
@@ -65,12 +65,13 @@ export default function Chat() {
                 {/* <!-- Left --> */}
                 <div class="w-1/3 border flex flex-col">
                   <LeftHeader socket={socket} />
-                  <ContactList setRoomId={setRoomId} />
+                  <ContactList setRoomId={setRoomId} roomId={roomId} />
                 </div>
                 <Room
                   roomId={roomId}
                   socket={socket}
                   play={play}
+                  stop={stop}
                   userVideo={userVideo}
                 />
                 )

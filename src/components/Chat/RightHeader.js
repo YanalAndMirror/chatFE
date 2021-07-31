@@ -9,7 +9,13 @@ import { GoSignOut } from "react-icons/go";
 import { removeUserFromGroup } from "../../store/actions/chatActions";
 import Call from "./Call";
 
-export default function RightHeader({ thisRoom, socket, userVideo, play }) {
+export default function RightHeader({
+  thisRoom,
+  socket,
+  userVideo,
+  play,
+  stop,
+}) {
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const membersList = thisRoom.users.map((_user) =>
@@ -45,6 +51,7 @@ export default function RightHeader({ thisRoom, socket, userVideo, play }) {
             membersList={thisRoom.users}
             play={play}
             roomId={thisRoom._id}
+            stop={stop}
           />
           <ParticipantsModal room={thisRoom} />
           {thisRoom.admin === user.id && <RoomSettingsModal room={thisRoom} />}

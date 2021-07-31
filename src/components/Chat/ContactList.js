@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import ContactItem from './ContactItem';
-import SearchBar from './SearchBar';
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import ContactItem from "./ContactItem";
+import SearchBar from "./SearchBar";
 
-export default function ContactList({ setRoomId }) {
-  const [query, setQuery] = useState('');
+export default function ContactList({ setRoomId, roomId }) {
+  const [query, setQuery] = useState("");
 
   let chats = useSelector((state) => state.chats.chats);
   let channels = useSelector((state) => state.chats.channels);
-
+  let user = useSelector((state) => state.user.user);
   chats.sort((a, b) => {
     // if no messages in both rooms then order by room creation
     if (
@@ -33,35 +33,50 @@ export default function ContactList({ setRoomId }) {
       (channel) =>
         channel.name.toLowerCase().includes(query) && query.length > 2
     )
-    .map((channel) => (
-      <ContactItem
-        room={channel}
-        name={channel.name}
-        photo={channel.photo}
-        lastMessage={
-          channel.messages.length > 0
-            ? channel.messages[channel.messages.length - 1]
-            : ''
-        }
-        setRoomId={setRoomId}
-      />
-    ));
-
+    .map((channel) => {
+      return (
+        <ContactItem
+          room={channel}
+          name={channel.name}
+          photo={channel.photo}
+          lastMessage={channel.messages[channel.messages.length - 1]}
+          setRoomId={setRoomId}
+        />
+      );
+    });
+  let notSeenRoom = null;
   chats = chats
     .filter((chat) => chat.name.toLowerCase().includes(query))
-    .map((chat) => (
-      <ContactItem
-        room={chat}
-        name={chat.name}
-        photo={chat.photo}
-        lastMessage={
-          chat.messages.length > 0
-            ? chat.messages[chat.messages.length - 1]
-            : ''
-        }
-        setRoomId={setRoomId}
-      />
-    ));
+    .map((chat) => {
+      let notSeenCount = chat.messages
+        .map((message) => {
+          let thisCount = message.receivers.filter((receiver) => {
+            if (receiver.seen === null && receiver._id == user._id) return true;
+            return false;
+          });
+          return thisCount.length;
+        })
+        .filter((a) => a).length;
+      if (!notSeenRoom && !roomId && notSeenCount === 0 && query === "") {
+        notSeenRoom = true;
+        setRoomId(chat._id);
+      }
+      if (notSeenRoom) return;
+      return (
+        <ContactItem
+          room={chat}
+          name={chat.name}
+          photo={chat.photo}
+          lastMessage={
+            chat.messages.length > 0
+              ? chat.messages[chat.messages.length - 1]
+              : ""
+          }
+          setRoomId={setRoomId}
+          notSeenCount={notSeenCount}
+        />
+      );
+    });
   return (
     <>
       <SearchBar setQuery={setQuery} />

@@ -7,7 +7,7 @@ import MsgsList from "./MsgsList";
 import RightHeader from "./RightHeader";
 import VideoCallModal from "./VideoCallModal";
 
-export default function Room({ roomId, socket, play }) {
+export default function Room({ roomId, socket, play, stop }) {
   const dispatch = useDispatch();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -35,6 +35,7 @@ export default function Room({ roomId, socket, play }) {
           userVideo={userVideo}
           roomId={roomId}
           play={play}
+          stop={stop}
         />
         {/* <!-- Messages --> */}
         <MsgsList

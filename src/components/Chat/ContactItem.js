@@ -7,6 +7,7 @@ export default function ContactItem({
   lastMessage,
   setRoomId,
   room,
+  notSeenCount,
 }) {
   return (
     <div onClick={() => setRoomId(room._id)}>
@@ -33,6 +34,11 @@ export default function ContactItem({
             {typeof lastMessage.content === "string" || !lastMessage.content
               ? lastMessage.content
               : lastMessage.content.text ?? `[${lastMessage.content.type}]`}
+            {notSeenCount > 0 && (
+              <span class="float-right inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-indigo-100 bg-indigo-700 rounded">
+                {notSeenCount}
+              </span>
+            )}
           </p>
         </div>
       </div>
