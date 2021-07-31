@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { GoCheck } from 'react-icons/go';
-import { BiCheckDouble } from 'react-icons/bi';
-import { IoIosArrowDown } from 'react-icons/io';
-import { MdNotInterested } from 'react-icons/md';
+import React, { useState } from "react";
+import { GoCheck } from "react-icons/go";
+import { BiCheckDouble } from "react-icons/bi";
+import { IoIosArrowDown } from "react-icons/io";
+import { MdNotInterested } from "react-icons/md";
 
-import { useDispatch } from 'react-redux';
-import { deleteMessage } from '../../store/actions/chatActions';
+import { useDispatch } from "react-redux";
+import { deleteMessage } from "../../store/actions/chatActions";
 
-import axios from 'axios';
-import fileDownload from 'js-file-download';
+import axios from "axios";
+import fileDownload from "js-file-download";
 
 export default function IncomingMsg({
   message,
@@ -28,7 +28,7 @@ export default function IncomingMsg({
   const handleDownload = (url, filename) => {
     axios
       .get(url, {
-        responseType: 'blob',
+        responseType: "blob",
       })
       .then((res) => {
         fileDownload(res.data, filename);
@@ -37,21 +37,21 @@ export default function IncomingMsg({
   if (message.content.type) {
     messageType = message.content.type;
   } else {
-    messageType = 'string';
+    messageType = "string";
   }
   console.log(messageType, message.content);
-  if (messageType === 'string') {
+  if (messageType === "string") {
     text = message.content.text;
-  } else if (messageType === 'deleted') {
+  } else if (messageType === "deleted") {
     text = (
       <il class="text-gray-500">
         <div className="inline-flex">
           <MdNotInterested />
-        </div>{' '}
+        </div>{" "}
         This message was deleted
       </il>
     );
-  } else if (messageType === 'giphy') {
+  } else if (messageType === "giphy") {
     text = (
       <iframe
         src={message.content.url}
@@ -60,26 +60,33 @@ export default function IncomingMsg({
         frameBorder="0"
       ></iframe>
     );
-  } else if (messageType === 'image') {
+  } else if (messageType === "image") {
     text = (
       <img src={message.content.url} class="object-contain h-48 w-full ..." />
     );
-  } else if (messageType === 'file') {
-    let name = message.content.url.split('/');
+  } else if (messageType === "file") {
+    let name = message.content.url.split("/");
     name = name[name.length - 1];
-
-    text = (
-      <center>
-        <button
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-          onClick={() => {
-            handleDownload(message.content.url, name);
-          }}
-        >
-          Download {name}
-        </button>
-      </center>
-    );
+    if (name.substr(-4) === ".mp4") {
+      text = (
+        <video width="400" controls>
+          <source src={message.content.url} type="video/mp4" />
+          Your browser does not support HTML video.
+        </video>
+      );
+    } else
+      text = (
+        <center>
+          <button
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+            onClick={() => {
+              handleDownload(message.content.url, name);
+            }}
+          >
+            Download {name}
+          </button>
+        </center>
+      );
   } else {
     text = message.content.text;
   }
@@ -96,7 +103,7 @@ export default function IncomingMsg({
   );
 
   // Set Seen check based on seenBy/recivedBy;
-  let seenStatus = '';
+  let seenStatus = "";
   if (sameUser) {
     if (seenBy.length === message.receivers.length) {
       seenStatus = (
@@ -123,46 +130,46 @@ export default function IncomingMsg({
   const myMenu = true;
   const openMenu = () => {
     setMenu(true);
-    window.removeEventListener('mousedown', closeMenu);
-    window.addEventListener('mousedown', closeMenu);
+    window.removeEventListener("mousedown", closeMenu);
+    window.addEventListener("mousedown", closeMenu);
   };
   const closeMenu = () => {
     if (myMenu === true) {
       setIsShown(false);
       setMenu(false);
 
-      window.removeEventListener('mousedown', closeMenu);
+      window.removeEventListener("mousedown", closeMenu);
     } else {
       myMenu = false;
     }
   };
   return (
-    <div class={sameUser ? 'flex justify-end mb-2' : ''}>
+    <div class={sameUser ? "flex justify-end mb-2" : ""}>
       <div
         onMouseEnter={() => setIsShown(true)}
-        onMouseLeave={() => (menu ? '' : setIsShown(false))}
+        onMouseLeave={() => (menu ? "" : setIsShown(false))}
         class={
-          ' m-1.5 w-auto md:w-' +
+          " m-1.5 w-auto md:w-" +
           (1 +
             Math.min(
               Math.floor((isNaN(text.length) ? 16 : text.length) / 4),
               6
             )) +
-          '/12 right-0  rounded py-1 px-3'
+          "/12 right-0  rounded py-1 px-3"
         }
-        style={{ backgroundColor: sameUser ? '#E2F7CB' : '#F2F2F2' }}
+        style={{ backgroundColor: sameUser ? "#E2F7CB" : "#F2F2F2" }}
       >
-        {type !== 'Private' && !sameUser ? (
+        {type !== "Private" && !sameUser ? (
           <p class="text-sm text-teal">
-            {message.user.userName === ''
+            {message.user.userName === ""
               ? message.user.phoneNumber
               : message.user.userName}
-            :{' '}
+            :{" "}
           </p>
         ) : (
-          ''
+          ""
         )}
-        {messageType !== 'deleted' && isShown && (
+        {messageType !== "deleted" && isShown && (
           <span className="float-right cursor-pointer" onClick={openMenu}>
             <IoIosArrowDown />
           </span>
@@ -177,7 +184,7 @@ export default function IncomingMsg({
             <div class="py-1" role="none">
               <span
                 onMouseDown={() =>
-                  setIsOpen({ roomId, message, text, type: 'forward' })
+                  setIsOpen({ roomId, message, text, type: "forward" })
                 }
                 class="text-gray-700 block px-4 py-2 text-sm cursor-pointer"
                 tabindex="-1"
@@ -193,10 +200,10 @@ export default function IncomingMsg({
               >
                 Reply
               </span>
-              {sameUser && messageType === 'string' && (
+              {sameUser && messageType === "string" && (
                 <span
                   onMouseDown={() =>
-                    setIsOpen({ roomId, message, text, type: 'Edit' })
+                    setIsOpen({ roomId, message, text, type: "Edit" })
                   }
                   class="text-gray-700 block px-4 py-2 text-sm cursor-pointer"
                   tabindex="-1"
@@ -216,7 +223,7 @@ export default function IncomingMsg({
               {sameUser && (
                 <span
                   onMouseDown={() => {
-                    setIsOpen({ roomId, message, text, type: 'DeleteAll' });
+                    setIsOpen({ roomId, message, text, type: "DeleteAll" });
                   }}
                   class="text-gray-700 block px-4 py-2 text-sm cursor-pointer"
                   tabindex="-1"
@@ -235,8 +242,8 @@ export default function IncomingMsg({
         <p class="text-sm mt-1">{text}</p>
 
         <p class="text-right text-xs text-grey-dark mt-1">
-          {messageType === 'edited' ? 'Edited' : ''}
-          {new Date(message.createdAt).toString().substr(15, 6) + ' '}
+          {messageType === "edited" ? "Edited" : ""}
+          {new Date(message.createdAt).toString().substr(15, 6) + " "}
           {seenStatus}
         </p>
       </div>
