@@ -86,6 +86,13 @@ export default function IncomingMsg({
           </button>
         </center>
       );
+  } else if (messageType === "voice") {
+    text = (
+      <audio controls src={message.content.url}>
+        Your browser does not support the
+        <code>audio</code> element.
+      </audio>
+    );
   } else {
     text = message.content.text;
   }

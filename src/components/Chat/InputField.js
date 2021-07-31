@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
-import { IoMdClose } from 'react-icons/io';
-import { AiOutlineGif } from 'react-icons/ai';
-import { ImAttachment } from 'react-icons/im';
-import { GrEmoji } from 'react-icons/gr';
-import { MdKeyboardVoice } from 'react-icons/md';
-import { BsFillImageFill } from 'react-icons/bs';
+import { IoMdClose } from "react-icons/io";
+import { AiOutlineGif } from "react-icons/ai";
+import { ImAttachment } from "react-icons/im";
+import { GrEmoji } from "react-icons/gr";
+import { MdKeyboardVoice } from "react-icons/md";
+import { BsFillImageFill } from "react-icons/bs";
 
-import Picker from 'emoji-picker-react';
-import ReactGiphySearchbox from 'react-giphy-searchbox';
-import instance from '../../store/actions/instance';
+import Picker from "emoji-picker-react";
+import ReactGiphySearchbox from "react-giphy-searchbox";
+import instance from "../../store/actions/instance";
+import AudioReactRecorder, { RecordState } from "audio-react-recorder";
 
 export default function InputField({
   roomId,
@@ -22,39 +23,42 @@ export default function InputField({
 }) {
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [chosenGiphy, setChosenGiphy] = useState(null);
+  const [voiceRecored, setVoiceRecored] = useState(RecordState.NONE);
+  const [voice, setVoice] = useState(false);
+
   const onEmojiClick = (event, emojiObject) => {
-    setInput({ ...input, [roomId]: (input[roomId] ?? '') + emojiObject.emoji });
+    setInput({ ...input, [roomId]: (input[roomId] ?? "") + emojiObject.emoji });
     setChosenEmoji(false);
   };
   const user = useSelector((state) => state.user.user);
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (input[roomId] === '') return;
+    if (input[roomId] === "") return;
     let content = {};
 
     content.text = input[roomId];
-    content.type = 'string';
+    content.type = "string";
     if (inputReply[roomId]) {
       content.to = inputReply[roomId];
     }
-    socket.emit('chatMessage', {
+    socket.emit("chatMessage", {
       roomId,
       content: content,
       userId: user.id,
     });
-    setInput({ ...input, [roomId]: '' });
+    setInput({ ...input, [roomId]: "" });
     setInputReply({ ...inputReply, [roomId]: null });
   };
   const handleSubmitGiphy = (e) => {
     let content = {};
-    content.text = '[GIF]';
-    content.type = 'giphy';
+    content.text = "[GIF]";
+    content.type = "giphy";
     content.url = e.embed_url;
     console.log(e);
     if (inputReply[roomId]) {
       content.to = inputReply[roomId];
     }
-    socket.emit('chatMessage', {
+    socket.emit("chatMessage", {
       roomId,
       content: content,
       userId: user.id,
@@ -64,17 +68,22 @@ export default function InputField({
   };
   const handleSubmitAttachment = async (e, type) => {
     const formData = new FormData();
-    formData.append('file', e.target.files[0]);
+    formData.append(
+      "file",
+      e.target?.files[0] ?? new File([e.blob], "voice.wav")
+    );
+    console.log(e);
+
     const res = await instance.post(`/api/v1/rooms/attachment`, formData);
 
     let content = {};
-    content.text = '[' + type + ']';
+    content.text = "[" + type + "]";
     content.type = type;
     content.url = res.data;
     if (inputReply[roomId]) {
       content.to = inputReply[roomId];
     }
-    socket.emit('chatMessage', {
+    socket.emit("chatMessage", {
       roomId,
       content: content,
       userId: user.id,
@@ -91,7 +100,7 @@ export default function InputField({
         }}
       >
         <GrEmoji color="#1A237E" size="24px" className="cursor-pointer" />
-      </div>{' '}
+      </div>{" "}
       <div
         onClick={() => {
           setChosenEmoji(false);
@@ -106,10 +115,10 @@ export default function InputField({
       </div>
       <label className="custom-file-upload">
         <input
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           type="file"
           onChange={(e) => {
-            handleSubmitAttachment(e, 'file');
+            handleSubmitAttachment(e, "file");
           }}
         />
         <ImAttachment
@@ -121,10 +130,10 @@ export default function InputField({
       <label className="custom-file-upload">
         <input
           accept="image/*"
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           type="file"
           onChange={(e) => {
-            handleSubmitAttachment(e, 'image');
+            handleSubmitAttachment(e, "image");
           }}
         />
         <BsFillImageFill
@@ -149,7 +158,7 @@ export default function InputField({
               <p class="text-sm text-teal">
                 <b>
                   {inputReply[roomId].user.userName &&
-                  inputReply[roomId].user.userName !== ''
+                  inputReply[roomId].user.userName !== ""
                     ? inputReply[roomId].user.userName
                     : inputReply[roomId].user.phoneNumber}
                 </b>
@@ -165,14 +174,27 @@ export default function InputField({
             </div>
           )}
 
-          <input
-            placeholder="Type a message"
-            class="w-full border rounded px-2 py-2"
-            type="text"
-            value={input[roomId] ?? ''}
-            onChange={(e) => setInput({ ...input, [roomId]: e.target.value })}
-          />
+          {!voice ? (
+            <input
+              placeholder="Type a message"
+              class="w-full border rounded px-2 py-2"
+              type="text"
+              value={input[roomId] ?? ""}
+              onChange={(e) => setInput({ ...input, [roomId]: e.target.value })}
+            />
+          ) : (
+            <></>
+          )}
         </form>
+        <AudioReactRecorder
+          state={voiceRecored}
+          onStop={(e) => handleSubmitAttachment(e, "voice")}
+          canvasHeight={voice ? 50 : 0}
+          canvasWidth={voice ? 500 : 0}
+          backgroundColor="#F3F7F9"
+          foregroundColor="#1A237E"
+        />
+        <div></div>
       </div>
       {chosenGiphy && (
         <div class="absolute bottom-20 left-15 bg-grey-lighter">
@@ -187,6 +209,15 @@ export default function InputField({
           color="#1A237E"
           size="24px"
           className="cursor-pointer"
+          onClick={() => {
+            if (voice) {
+              setVoiceRecored(RecordState.STOP);
+              setVoice(false);
+            } else {
+              setVoiceRecored(RecordState.START);
+              setVoice(true);
+            }
+          }}
         />
       </div>
     </div>
