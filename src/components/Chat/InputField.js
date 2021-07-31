@@ -3,9 +3,12 @@ import { useSelector } from "react-redux";
 
 import { IoMdClose } from "react-icons/io";
 import { AiOutlineGif } from "react-icons/ai";
+import { GrAttachment } from "react-icons/gr";
+import { BsFillImageFill } from "react-icons/bs";
 
 import Picker from "emoji-picker-react";
 import ReactGiphySearchbox from "react-giphy-searchbox";
+import instance from "../../store/actions/instance";
 
 export default function InputField({
   roomId,
@@ -23,8 +26,10 @@ export default function InputField({
   };
   const user = useSelector((state) => state.user.user);
   const handleSubmit = (e) => {
-    let content = {};
     e.preventDefault();
+    if (input[roomId] === "") return;
+    let content = {};
+
     content.text = input[roomId];
     content.type = "string";
     if (inputReply[roomId]) {
@@ -38,12 +43,32 @@ export default function InputField({
     setInput({ ...input, [roomId]: "" });
     setInputReply({ ...inputReply, [roomId]: null });
   };
-  const handleSubmitAttachment = (e) => {
+  const handleSubmitGiphy = (e) => {
     let content = {};
     content.text = "[GIF]";
     content.type = "giphy";
     content.url = e.embed_url;
     console.log(e);
+    if (inputReply[roomId]) {
+      content.to = inputReply[roomId];
+    }
+    socket.emit("chatMessage", {
+      roomId,
+      content: content,
+      userId: user.id,
+    });
+    setChosenGiphy(false);
+    setInputReply({ ...inputReply, [roomId]: null });
+  };
+  const handleSubmitAttachment = async (e, type) => {
+    const formData = new FormData();
+    formData.append("file", e.target.files[0]);
+    const res = await instance.post(`/api/v1/rooms/attachment`, formData);
+
+    let content = {};
+    content.text = "[" + type + "]";
+    content.type = type;
+    content.url = res.data;
     if (inputReply[roomId]) {
       content.to = inputReply[roomId];
     }
@@ -84,6 +109,27 @@ export default function InputField({
       >
         <AiOutlineGif size={30} />
       </div>
+      <label className="custom-file-upload">
+        <input
+          style={{ display: "none" }}
+          type="file"
+          onChange={(e) => {
+            handleSubmitAttachment(e, "file");
+          }}
+        />
+        <GrAttachment />
+      </label>
+      <label className="custom-file-upload">
+        <input
+          accept="image/*"
+          style={{ display: "none" }}
+          type="file"
+          onChange={(e) => {
+            handleSubmitAttachment(e, "image");
+          }}
+        />
+        <BsFillImageFill />
+      </label>
       <div class="flex-1 mx-4">
         <form onSubmit={handleSubmit}>
           {inputReply[roomId] && (
@@ -129,7 +175,7 @@ export default function InputField({
         <div class="absolute bottom-20 left-15 bg-grey-lighter">
           <ReactGiphySearchbox
             apiKey="comDBd9jh2uM1yBnCT3nXEloN1ox4CrQ" // Required: get your on https://developers.giphy.com
-            onSelect={handleSubmitAttachment}
+            onSelect={handleSubmitGiphy}
           />
         </div>
       )}

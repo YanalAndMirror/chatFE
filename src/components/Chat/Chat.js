@@ -14,81 +14,59 @@ import {
 export default function Chat() {
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
-  const [peer, setPeer] = useState(false);
-  const [peerRecive, setPeerRecive] = useState(false);
-  const [connected, setConnected] = useState(false);
-  const [toUser, setToUser] = useState(false);
   const [socket, setSocket] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loading2, setLoading2] = useState(false);
-  const [loading3, setLoading3] = useState(false);
+
   const userVideo = useRef({});
-  const [stream, setStream] = useState();
-
-  const initPeer = (userId) => {
-    setToUser(userId);
-    setPeer(new Peer({ initiator: true, trickle: false, stream: stream }));
+  const startCall = (userId) => {
+    navigator.mediaDevices
+      .getUserMedia({
+        video: true,
+        audio: true,
+      })
+      .then((stream) => {
+        const peer = new Peer({
+          initiator: true,
+          trickle: false,
+          stream: stream,
+        });
+        peer.on("signal", (data) => {
+          socket.emit("peer", { userId, data });
+        });
+        peer.on("stream", (stream) => {
+          userVideo.current.srcObject = stream;
+        });
+        socket.on("reciverPeer", ({ data }) => {
+          peer.signal(data);
+          console.log("success");
+        });
+      });
   };
-  function addMedia(stream) {
-    peer.addStream(stream); // <- add streams to peer dynamically
-  }
-  useEffect(() => {
-    if (connected) {
-      navigator.mediaDevices
-        .getUserMedia({
-          audio: true,
-        })
-        .then(addMedia)
-        .catch(() => {});
-    }
-  }, [connected]);
-  useEffect(() => {
-    if (peerRecive) {
-      peerRecive.on("signal", (data) => {
-        socket.emit("peerRecive", { userId: "610048429b996722dc5addc0", data });
+  const acceptCall = (userId) => {
+    navigator.mediaDevices
+      .getUserMedia({
+        video: true,
+        audio: true,
+      })
+      .then((stream) => {
+        const peer = new Peer({ trickle: false, stream: stream });
+        peer.on("signal", (data) => {
+          socket.emit("peerRecive", { userId, data });
+        });
+        peer.on("stream", (stream) => {
+          userVideo.current.srcObject = stream;
+        });
+        socket.on("startPeer", ({ data }) => {
+          peer.signal(data);
+        });
       });
-      peerRecive.on("stream", (stream) => {
-        userVideo.current.srcObject = stream;
-      });
-      socket.on("startPeer", ({ data }) => {
-        peerRecive.signal(data);
-      });
-    }
-  }, [loading3]);
+  };
 
   useEffect(() => {
-    if (peer) {
-      peer.on("signal", (data) => {
-        console.log("here");
-        socket.emit("peer", { userId: toUser, data });
-      });
-      peer.on("stream", (stream) => {
-        userVideo.current.srcObject = stream;
-      });
-      socket.on("reciverPeer", ({ data }) => {
-        peer.signal(data);
-        if (connected === false) setConnected(true);
-      });
-    }
-  }, [loading2]);
-  useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-      console.log(stream);
-      setStream(stream);
-      setPeerRecive(new Peer({ trickle: false, stream: stream }));
-    });
-
     setSocket(io("localhost:8000"));
   }, []);
-  console.log(peerRecive);
   if (socket && loading === false) {
     setLoading(true);
-  }
-  if (peer && loading2 === false) {
-    setLoading2(true);
-  }
-  if (peerRecive && loading3 === false) {
-    setLoading3(true);
   }
   useEffect(() => {
     if (socket) {
@@ -131,15 +109,24 @@ export default function Chat() {
                   <ContactList setRoomId={setRoomId} />
                 </div>
                 {/* <!-- Right --> */}
-                <button onClick={() => initPeer("610048429b996722dc5addc0")}>
+                {/* <button
+                  onClick={() => {
+                    startCall("610048429b996722dc5addc0");
+                  }}
+                >
                   Call
                 </button>
-                <button onClick={() => initPeer("6100483d9b996722dc5addbe")}>
+                <button
+                  onClick={() => {
+                    acceptCall("6100483d9b996722dc5addbe");
+                  }}
+                >
                   Call back
-                </button>
+                </button> 
                 {userVideo !== {} && (
                   <video ref={userVideo} autoPlay style={{ width: "600px" }} />
                 )}
+                */}
                 {<Room roomId={roomId} socket={socket} />}
               </div>
             </div>

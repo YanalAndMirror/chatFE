@@ -7,6 +7,9 @@ import { MdNotInterested } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { deleteMessage } from "../../store/actions/chatActions";
 
+import axios from "axios";
+import fileDownload from "js-file-download";
+
 export default function IncomingMsg({
   message,
   type,
@@ -22,13 +25,23 @@ export default function IncomingMsg({
   // Get message text
   let text;
   let messageType;
+  const handleDownload = (url, filename) => {
+    axios
+      .get(url, {
+        responseType: "blob",
+      })
+      .then((res) => {
+        fileDownload(res.data, filename);
+      });
+  };
   if (message.content.type) {
     messageType = message.content.type;
   } else {
-    messageType = "text";
+    messageType = "string";
   }
-  if (messageType === "text") {
-    text = message.content;
+  console.log(messageType, message.content);
+  if (messageType === "string") {
+    text = message.content.text;
   } else if (messageType === "deleted") {
     text = (
       <il class="text-gray-500">
@@ -46,6 +59,26 @@ export default function IncomingMsg({
         height="150"
         frameBorder="0"
       ></iframe>
+    );
+  } else if (messageType === "image") {
+    text = (
+      <img src={message.content.url} class="object-contain h-48 w-full ..." />
+    );
+  } else if (messageType === "file") {
+    let name = message.content.url.split("/");
+    name = name[name.length - 1];
+
+    text = (
+      <center>
+        <button
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+          onClick={() => {
+            handleDownload(message.content.url, name);
+          }}
+        >
+          Download {name}
+        </button>
+      </center>
     );
   } else {
     text = message.content.text;
@@ -160,7 +193,7 @@ export default function IncomingMsg({
               >
                 Reply
               </span>
-              {sameUser && (
+              {sameUser && messageType === "string" && (
                 <span
                   onMouseDown={() =>
                     setIsOpen({ roomId, message, text, type: "Edit" })
