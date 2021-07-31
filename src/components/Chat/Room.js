@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addUserToGroup } from "../../store/actions/chatActions";
-import InputField from "./InputField";
-import MessageModel from "./MessageModel";
-import MsgsList from "./MsgsList";
-import RightHeader from "./RightHeader";
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addUserToGroup } from '../../store/actions/chatActions';
+import InputField from './InputField';
+import MessageModel from './MessageModel';
+import MsgsList from './MsgsList';
+import RightHeader from './RightHeader';
+import VideoCallModal from './VideoCallModal';
 
 export default function Room({ roomId, socket }) {
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ export default function Room({ roomId, socket }) {
           thisRoom={thisRoom}
           socket={socket}
           userVideo={userVideo}
+          roomId={roomId}
         />
         {/* <!-- Messages --> */}
         <MsgsList
@@ -44,7 +46,7 @@ export default function Room({ roomId, socket }) {
           inputReply={inputReply}
         />
         {/* <!-- Input --> */}
-        {thisRoom.type === "Channel" && thisRoom.admin === user.id && (
+        {thisRoom.type === 'Channel' && thisRoom.admin === user.id && (
           <InputField
             input={input}
             setInput={setInput}
@@ -54,7 +56,7 @@ export default function Room({ roomId, socket }) {
             inputReply={inputReply}
           />
         )}
-        {thisRoom.type === "Channel" &&
+        {thisRoom.type === 'Channel' &&
           !thisRoom.users.map((u) => u.id).includes(user.id) && (
             <center
               onClick={() => dispatch(addUserToGroup(roomId, user.phoneNumber))}
@@ -65,13 +67,15 @@ export default function Room({ roomId, socket }) {
           )}
         {userVideo !== {} && (
           <>
-            <video ref={userVideo} autoPlay style={{ width: "600px" }} />
-            <button onClick={() => socket.emit("endCall", { roomId })}>
-              EndCall
-            </button>
+            <VideoCallModal
+              userVideo={userVideo}
+              _isOpen={false}
+              socket={socket}
+              roomId={roomId}
+            />
           </>
         )}
-        {thisRoom.type !== "Channel" && (
+        {thisRoom.type !== 'Channel' && (
           <InputField
             input={input}
             setInput={setInput}
