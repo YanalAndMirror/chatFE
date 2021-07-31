@@ -10,8 +10,12 @@ import {
   seeMessage,
   updateMessage,
 } from "../../store/actions/chatActions";
-import Call from "./Call";
+import useSound from "use-sound";
+
+import ringtone from "../../assets/ringtone.mp3";
 export default function Chat() {
+  const [play] = useSound(ringtone);
+
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const [socket, setSocket] = useState(false);
@@ -64,7 +68,7 @@ export default function Chat() {
                   <ContactList setRoomId={setRoomId} />
                 </div>
 
-                {<Room roomId={roomId} socket={socket} />}
+                {<Room roomId={roomId} socket={socket} play={play} />}
               </div>
             </div>
           </div>

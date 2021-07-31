@@ -1,24 +1,20 @@
-import Peer from 'simple-peer';
+import Peer from "simple-peer";
 
-import { MdCall } from 'react-icons/md';
-import { BsFillCameraVideoFill } from 'react-icons/bs';
-import { ImPhone } from 'react-icons/im';
-import { ImPhoneHangUp } from 'react-icons/im';
-import useSound from 'use-sound';
-import { Dialog, Transition } from '@headlessui/react';
-import { Fragment } from 'react';
+import { MdCall } from "react-icons/md";
+import { BsFillCameraVideoFill } from "react-icons/bs";
+import { ImPhone } from "react-icons/im";
+import { ImPhoneHangUp } from "react-icons/im";
+import { Dialog, Transition } from "@headlessui/react";
+import { Fragment } from "react";
 
-import ringtone from '../../assets/ringtone.mp3';
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import VideoCallModal from "./VideoCallModal";
 
-import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import VideoCallModal from './VideoCallModal';
-
-export default function Call({ socket, userVideo, membersList, roomId }) {
+export default function Call({ socket, userVideo, membersList, roomId, play }) {
   const user = useSelector((state) => state.user.user);
-  const [play] = useSound(ringtone);
   let [isOpen, setIsOpen] = useState(false);
 
   function closeModal() {
@@ -30,29 +26,29 @@ export default function Call({ socket, userVideo, membersList, roomId }) {
   }
 
   const callUser = (touser) => {
-    socket.emit('call', { userId: touser._id, sender: user });
-    socket.on('callAccept', (data) => {
+    socket.emit("call", { userId: touser._id, sender: user });
+    socket.on("callAccept", (data) => {
       console.log(data);
       startCall(touser._id);
     });
   };
   useEffect(() => {
-    socket.on('call', ({ sender }) => {
-      console.log(sender);
+    //
+    socket.on("call", ({ sender }) => {
       play();
       toast(
         <center>
           <ImPhone
             onClick={() => {
               acceptCall(sender._id);
-              socket.emit('callAccept', { userId: sender._id });
+              socket.emit("callAccept", { userId: sender._id });
             }}
             color="#27EE20"
             size="24px"
             className="cursor-pointer mr-4 inline-block"
-          />{' '}
-          {sender.userName + ' Is Calling' ??
-            sender.phoneNumber + ' Is Calling'}
+          />{" "}
+          {sender.userName + " Is Calling" ??
+            sender.phoneNumber + " Is Calling"}
           <ImPhoneHangUp
             onClick={() => {}}
             color="#E90A0A"
@@ -61,7 +57,7 @@ export default function Call({ socket, userVideo, membersList, roomId }) {
           />
         </center>,
         {
-          position: 'bottom-center',
+          position: "bottom-center",
           autoClose: false,
           hideProgressBar: false,
           closeOnClick: true,
@@ -84,17 +80,17 @@ export default function Call({ socket, userVideo, membersList, roomId }) {
           trickle: false,
           stream: stream,
         });
-        peer.on('signal', (data) => {
-          socket.emit('peer', { userId, data });
+        peer.on("signal", (data) => {
+          socket.emit("peer", { userId, data });
         });
-        peer.on('stream', (stream) => {
+        peer.on("stream", (stream) => {
           userVideo.current.srcObject = stream;
         });
-        socket.on('reciverPeer', ({ data }) => {
+        socket.on("reciverPeer", ({ data }) => {
           peer.signal(data);
-          console.log('success');
+          console.log("success");
         });
-        socket.on('peerEnd', ({ data }) => {
+        socket.on("peerEnd", ({ data }) => {
           peer.destroy();
         });
       });
@@ -108,16 +104,16 @@ export default function Call({ socket, userVideo, membersList, roomId }) {
       })
       .then((stream) => {
         const peer = new Peer({ trickle: false, stream: stream });
-        peer.on('signal', (data) => {
-          socket.emit('peerRecive', { userId, data });
+        peer.on("signal", (data) => {
+          socket.emit("peerRecive", { userId, data });
         });
-        peer.on('stream', (stream) => {
+        peer.on("stream", (stream) => {
           userVideo.current.srcObject = stream;
         });
-        socket.on('startPeer', ({ data }) => {
+        socket.on("startPeer", ({ data }) => {
           peer.signal(data);
         });
-        socket.on('peerEnd', ({ data }) => {
+        socket.on("peerEnd", ({ data }) => {
           peer.destroy();
         });
       });
@@ -193,7 +189,7 @@ export default function Call({ socket, userVideo, membersList, roomId }) {
                     <video
                       ref={userVideo}
                       autoPlay
-                      style={{ width: '600px' }}
+                      style={{ width: "600px" }}
                     />
 
                     <div className="mt-4">
@@ -201,7 +197,7 @@ export default function Call({ socket, userVideo, membersList, roomId }) {
                         type="button"
                         className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
                         onClick={() => {
-                          socket.emit('endCall', { roomId });
+                          socket.emit("endCall", { roomId });
                           closeModal();
                         }}
                       >
