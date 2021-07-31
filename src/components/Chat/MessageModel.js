@@ -18,7 +18,6 @@ export default function MessageModel({ isOpen, setIsOpen, socket }) {
   function openModal() {
     setIsOpen(true);
   }
-  console.log(isOpen);
   const handleAdd = () => {
     let content = {};
     if (isOpen.type === "Edit") {

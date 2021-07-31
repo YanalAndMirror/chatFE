@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addUserToGroup } from "../../store/actions/chatActions";
 import InputField from "./InputField";
@@ -12,6 +12,8 @@ export default function Room({ roomId, socket }) {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState({});
   const [inputReply, setInputReply] = useState({});
+  const userVideo = useRef({});
+
   let thisRoom = useSelector((state) =>
     state.chats.chats?.find((chat) => chat._id === roomId)
   );
@@ -26,7 +28,11 @@ export default function Room({ roomId, socket }) {
       <MessageModel socket={socket} isOpen={isOpen} setIsOpen={setIsOpen} />
       <div class="w-2/3 border flex flex-col">
         {/* <!-- Header --> */}
-        <RightHeader thisRoom={thisRoom} />
+        <RightHeader
+          thisRoom={thisRoom}
+          socket={socket}
+          userVideo={userVideo}
+        />
         {/* <!-- Messages --> */}
         <MsgsList
           roomId={roomId}
@@ -57,7 +63,14 @@ export default function Room({ roomId, socket }) {
               Join
             </center>
           )}
-
+        {userVideo !== {} && (
+          <>
+            <video ref={userVideo} autoPlay style={{ width: "600px" }} />
+            <button onClick={() => socket.emit("endCall", { roomId })}>
+              EndCall
+            </button>
+          </>
+        )}
         {thisRoom.type !== "Channel" && (
           <InputField
             input={input}

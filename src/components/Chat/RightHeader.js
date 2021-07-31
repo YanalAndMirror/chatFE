@@ -1,6 +1,5 @@
 import React from "react";
 import nophoto from "../../assets/no-photo.png";
-import ChatMenu from "./ChatMenu";
 import ParticipantsModal from "./ParticipantsModal";
 import { FaSearch } from "react-icons/fa";
 import RoomSettingsModal from "./RoomSettingsModal";
@@ -8,9 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { GoSignOut } from "react-icons/go";
 
 import { removeUserFromGroup } from "../../store/actions/chatActions";
-import VoiceCall from "./VoiceCall";
+import Call from "./Call";
 
-export default function RightHeader({ thisRoom }) {
+export default function RightHeader({ thisRoom, socket, userVideo }) {
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const membersList = thisRoom.users.map((_user) =>
@@ -40,8 +39,11 @@ export default function RightHeader({ thisRoom }) {
           <div class="ml-6">
             <FaSearch color="#1A237E" size="24px" className="cursor-pointer" />
           </div>
-          {/* //<VoiceCall /> */}
-
+          <Call
+            socket={socket}
+            userVideo={userVideo}
+            membersList={thisRoom.users}
+          />
           <ParticipantsModal room={thisRoom} />
           {thisRoom.admin === user.id && <RoomSettingsModal room={thisRoom} />}
           {thisRoom.admin !== user.id && thisRoom.type === "Channel" && (

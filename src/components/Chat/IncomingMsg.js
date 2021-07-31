@@ -39,7 +39,6 @@ export default function IncomingMsg({
   } else {
     messageType = "string";
   }
-  console.log(messageType, message.content);
   if (messageType === "string") {
     text = message.content.text;
   } else if (messageType === "deleted") {

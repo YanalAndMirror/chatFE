@@ -4,63 +4,18 @@ import LeftHeader from "./LeftHeader/LeftHeader";
 import { io } from "socket.io-client";
 import Room from "./Room";
 import { useDispatch, useSelector } from "react-redux";
-import Peer from "simple-peer";
 import {
   addMessage,
   readMessage,
   seeMessage,
   updateMessage,
 } from "../../store/actions/chatActions";
+import Call from "./Call";
 export default function Chat() {
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const [socket, setSocket] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const userVideo = useRef({});
-  const startCall = (userId) => {
-    navigator.mediaDevices
-      .getUserMedia({
-        video: true,
-        audio: true,
-      })
-      .then((stream) => {
-        const peer = new Peer({
-          initiator: true,
-          trickle: false,
-          stream: stream,
-        });
-        peer.on("signal", (data) => {
-          socket.emit("peer", { userId, data });
-        });
-        peer.on("stream", (stream) => {
-          userVideo.current.srcObject = stream;
-        });
-        socket.on("reciverPeer", ({ data }) => {
-          peer.signal(data);
-          console.log("success");
-        });
-      });
-  };
-  const acceptCall = (userId) => {
-    navigator.mediaDevices
-      .getUserMedia({
-        video: true,
-        audio: true,
-      })
-      .then((stream) => {
-        const peer = new Peer({ trickle: false, stream: stream });
-        peer.on("signal", (data) => {
-          socket.emit("peerRecive", { userId, data });
-        });
-        peer.on("stream", (stream) => {
-          userVideo.current.srcObject = stream;
-        });
-        socket.on("startPeer", ({ data }) => {
-          peer.signal(data);
-        });
-      });
-  };
 
   useEffect(() => {
     setSocket(io("localhost:8000"));
@@ -108,25 +63,7 @@ export default function Chat() {
                   <LeftHeader socket={socket} />
                   <ContactList setRoomId={setRoomId} />
                 </div>
-                {/* <!-- Right --> */}
-                {/* <button
-                  onClick={() => {
-                    startCall("610048429b996722dc5addc0");
-                  }}
-                >
-                  Call
-                </button>
-                <button
-                  onClick={() => {
-                    acceptCall("6100483d9b996722dc5addbe");
-                  }}
-                >
-                  Call back
-                </button> 
-                {userVideo !== {} && (
-                  <video ref={userVideo} autoPlay style={{ width: "600px" }} />
-                )}
-                */}
+
                 {<Room roomId={roomId} socket={socket} />}
               </div>
             </div>
