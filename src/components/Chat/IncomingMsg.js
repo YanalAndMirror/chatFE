@@ -6,9 +6,12 @@ import { MdNotInterested } from "react-icons/md";
 
 import { useDispatch } from "react-redux";
 import { deleteMessage } from "../../store/actions/chatActions";
+import { confirmAlert } from "react-confirm-alert"; // Import
 
 import axios from "axios";
 import fileDownload from "js-file-download";
+import Linkify from "react-linkify";
+import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 
 export default function IncomingMsg({
   message,
@@ -93,10 +96,23 @@ export default function IncomingMsg({
         <code>audio</code> element.
       </audio>
     );
+  } else if (messageType === "location") {
+    text = (
+      <img
+        onClick={() =>
+          window.open(
+            `https://www.google.com/maps/@${message.content.latitude},${message.content.longitude}`,
+            "_blank",
+            "noopener,noreferrer"
+          )
+        }
+        src={`https://maps.googleapis.com/maps/api/staticmap?zoom=15&size=400x200&maptype=roadmap&markers=color:red%7C${message.content.latitude},${message.content.longitude}&key=AIzaSyB8HneuExnTiRIBHmBMNsoJP33ymZg2mg4`}
+        class="object-contain h-48 w-full ..."
+      />
+    );
   } else {
     text = message.content.text;
   }
-
   // Check if sender is the user
   let sameUser = user._id === message.user._id;
 
@@ -245,7 +261,49 @@ export default function IncomingMsg({
             {message.content.to.content.text ?? message.content.to.content}
           </p>
         )}
-        <p class="text-sm mt-1">{text}</p>
+        <p class="text-sm mt-1">
+          <Linkify
+            componentDecorator={(decoratedHref, decoratedText, key) => (
+              <a
+                onClick={() => {
+                  const domain = new URL(decoratedHref).hostname.replace(
+                    /^[^.]+\./g,
+                    ""
+                  );
+                  confirmAlert({
+                    message: (
+                      <>
+                        You are going to <b>{domain}</b>, are you sure you want
+                        to go there?
+                      </>
+                    ),
+                    buttons: [
+                      {
+                        label: "Yes",
+                        onClick: () =>
+                          window.open(
+                            decoratedHref,
+                            "_blank",
+                            "noopener,noreferrer"
+                          ),
+                      },
+                      {
+                        label: "No",
+                        onClick: () => {},
+                      },
+                    ],
+                  });
+                }}
+                key={key}
+                class="text-blue-400 hover:text-blue-600 cursor-pointer"
+              >
+                {decoratedText}
+              </a>
+            )}
+          >
+            {text}
+          </Linkify>
+        </p>
 
         <p class="text-right text-xs text-grey-dark mt-1">
           {messageType === "edited" ? "Edited" : ""}

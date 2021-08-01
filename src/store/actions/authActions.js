@@ -2,19 +2,25 @@ import * as actionTypes from "./types";
 import instance from "./instance";
 import { fetchRoom } from "./chatActions";
 
-export const signin = (phoneNumber, history) => {
+export const signin = (phoneNumber, code, setError) => {
   return async (dispatch) => {
     try {
       const res = await instance.post(`/api/v1/users/login`, {
         phoneNumber: phoneNumber,
+        code,
       });
-      dispatch(fetchRoom(res.data._id));
-      history.push("/");
-      dispatch({
-        type: actionTypes.LOGIN,
-        payload: res.data,
-      });
+      console.log(res.data);
+      if (res.data) {
+        dispatch(fetchRoom(res.data._id));
+        dispatch({
+          type: actionTypes.LOGIN,
+          payload: res.data,
+        });
+      } else {
+        setError(true);
+      }
     } catch (error) {
+      setError(true);
       console.log(error);
     }
   };

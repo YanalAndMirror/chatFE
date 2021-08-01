@@ -23,8 +23,7 @@ export default function Room({ roomId, socket, play, stop }) {
     thisRoom = channels?.find((chat) => chat._id === roomId);
   }
   const user = useSelector((state) => state.user.user);
-
-  return roomId ? (
+  return roomId && thisRoom ? (
     <>
       <MessageModel socket={socket} isOpen={isOpen} setIsOpen={setIsOpen} />
       <div class="w-2/3 border flex flex-col">

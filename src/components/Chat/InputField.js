@@ -7,6 +7,7 @@ import { ImAttachment } from "react-icons/im";
 import { GrEmoji } from "react-icons/gr";
 import { MdKeyboardVoice } from "react-icons/md";
 import { BsFillImageFill } from "react-icons/bs";
+import { FaLocationArrow } from "react-icons/fa";
 
 import Picker from "emoji-picker-react";
 import ReactGiphySearchbox from "react-giphy-searchbox";
@@ -91,6 +92,21 @@ export default function InputField({
     setChosenGiphy(false);
     setInputReply({ ...inputReply, [roomId]: null });
   };
+  const handleSubmitLocation = async () => {
+    let content = {};
+    content.type = "location";
+    content.text = "[location]";
+
+    navigator.geolocation.getCurrentPosition(function (position) {
+      content.latitude = position.coords.latitude;
+      content.longitude = position.coords.longitude;
+      socket.emit("chatMessage", {
+        roomId,
+        content: content,
+        userId: user.id,
+      });
+    });
+  };
   return (
     <div class="bg-grey-lighter px-4 py-4 flex items-center">
       <div
@@ -108,6 +124,17 @@ export default function InputField({
         }}
       >
         <AiOutlineGif
+          color="#1A237E"
+          size="24px"
+          className="cursor-pointer ml-1"
+        />
+      </div>
+      <div
+        onClick={() => {
+          handleSubmitLocation();
+        }}
+      >
+        <FaLocationArrow
           color="#1A237E"
           size="24px"
           className="cursor-pointer ml-1"
