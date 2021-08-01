@@ -6,6 +6,7 @@ import Room from "./Room";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addMessage,
+  fetchRoom,
   readMessage,
   seeMessage,
   updateMessage,
@@ -21,11 +22,12 @@ export default function Chat() {
   const [socket, setSocket] = useState(false);
   const [loading, setLoading] = useState(false);
   const userVideo = useRef(null);
+  let chats = useSelector((state) => state.chats.chats);
 
   useEffect(() => {
     setSocket(io("localhost:8000"));
   }, []);
-  if (socket && loading === false) {
+  if (chats && socket && loading === false) {
     setLoading(true);
   }
   useEffect(() => {
@@ -41,7 +43,9 @@ export default function Chat() {
         dispatch(readMessage(roomIds, userId, time));
       });
       socket.on("message", (message) => {
-        dispatch(addMessage(message.roomId, message.content));
+        if (chats.find((chat) => chat._id === message.roomId))
+          dispatch(addMessage(message.roomId, message.content));
+        else dispatch(fetchRoom(user._id));
       });
     }
   }, [loading]);
@@ -52,7 +56,6 @@ export default function Chat() {
       socket.emit("roomSeen", { userId: user._id, roomId });
     }
   }, [roomId]);
-  let chats = useSelector((state) => state.chats.chats);
   return (
     <>
       {chats && (
