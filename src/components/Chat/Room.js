@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addUserToGroup } from "../../store/actions/chatActions";
-import InputField from "./InputField";
-import MessageModel from "./MessageModel";
-import MsgsList from "./MsgsList";
-import RightHeader from "./RightHeader";
-import VideoCallModal from "./VideoCallModal";
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addUserToGroup } from '../../store/actions/chatActions';
+import InputField from './InputField';
+import MessageModel from './MessageModel';
+import MsgsList from './MsgsList';
+import RightHeader from './RightHeader';
+import VideoCallModal from './VideoCallModal';
 
 export default function Room({ roomId, socket, play, stop }) {
   const dispatch = useDispatch();
@@ -13,6 +13,7 @@ export default function Room({ roomId, socket, play, stop }) {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState({});
   const [inputReply, setInputReply] = useState({});
+  const [query, setQuery] = useState('');
   const userVideo = useRef({});
 
   let thisRoom = useSelector((state) =>
@@ -35,11 +36,14 @@ export default function Room({ roomId, socket, play, stop }) {
           roomId={roomId}
           play={play}
           stop={stop}
+          setQuery={setQuery}
         />
         {/* <!-- Messages --> */}
         <MsgsList
           roomId={roomId}
-          messages={thisRoom.messages}
+          messages={thisRoom.messages.filter((msg) =>
+            msg.content.text.includes(query)
+          )}
           type={thisRoom.type}
           user={user}
           setIsOpen={setIsOpen}
@@ -47,7 +51,7 @@ export default function Room({ roomId, socket, play, stop }) {
           inputReply={inputReply}
         />
         {/* <!-- Input --> */}
-        {thisRoom.type === "Channel" && thisRoom.admin === user.id && (
+        {thisRoom.type === 'Channel' && thisRoom.admin === user.id && (
           <InputField
             input={input}
             setInput={setInput}
@@ -57,7 +61,7 @@ export default function Room({ roomId, socket, play, stop }) {
             inputReply={inputReply}
           />
         )}
-        {thisRoom.type === "Channel" &&
+        {thisRoom.type === 'Channel' &&
           !thisRoom.users.map((u) => u.id).includes(user.id) && (
             <center
               onClick={() => dispatch(addUserToGroup(roomId, user.phoneNumber))}
@@ -76,7 +80,7 @@ export default function Room({ roomId, socket, play, stop }) {
             />
           </>
         )}
-        {thisRoom.type !== "Channel" && (
+        {thisRoom.type !== 'Channel' && (
           <InputField
             input={input}
             setInput={setInput}
