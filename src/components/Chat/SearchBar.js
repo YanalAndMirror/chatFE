@@ -7,7 +7,7 @@ export default function SearchBar({ setQuery }) {
         <input
           type="text"
           class="w-full px-2 py-2 text-sm"
-          placeholder="Search or start new chat"
+          placeholder="Search"
           onChange={(event) => setQuery(event.target.value)}
         />
       </div>
