@@ -50,12 +50,6 @@ export default function Chat() {
     }
   }, [loading]);
   const [roomId, setRoomId] = useState(false);
-
-  useEffect(() => {
-    if (socket && roomId) {
-      socket.emit("roomSeen", { userId: user._id, roomId });
-    }
-  }, [roomId]);
   return (
     <>
       {chats && (

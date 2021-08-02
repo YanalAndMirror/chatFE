@@ -9,12 +9,26 @@ export default function MsgsList({
   roomId,
   setInputReply,
   inputReply,
+  socket,
 }) {
   const el = useRef(null);
 
   useEffect(() => {
     el.current.scrollIntoView({ block: "end" });
-  },[]);
+    if (socket) {
+      let notSeenCount = messages
+        .map((message) => {
+          let thisCount = message.receivers.filter((receiver) => {
+            if (receiver.seen === null && receiver._id == user._id) return true;
+            return false;
+          });
+          return thisCount.length;
+        })
+        .filter((a) => a).length;
+      if (notSeenCount > 0)
+        socket.emit("roomSeen", { userId: user._id, roomId });
+    }
+  }, [messages]);
 
   let messageDate = "";
   let roomMessages = messages.map((message) => {
