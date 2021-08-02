@@ -21,7 +21,6 @@ export default function Call({
   play,
   stop,
 }) {
-  console.log(socket.id);
   const user = useSelector((state) => state.user.user);
   let [isOpen, setIsOpen] = useState(false);
   const userVideo2 = useRef(null);
@@ -49,7 +48,6 @@ export default function Call({
   };
   useEffect(() => {
     //
-    console.log("here");
     socket.off("call");
     socket.on("call", ({ sender, video }) => {
       play();

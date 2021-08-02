@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+
 import ContactList from "./ContactList";
 import LeftHeader from "./LeftHeader/LeftHeader";
 import { io } from "socket.io-client";
@@ -12,8 +13,11 @@ import {
   updateMessage,
 } from "../../store/actions/chatActions";
 import useSound from "use-sound";
-
+import * as actionTypes from "../../store/actions/types";
 import ringtone from "../../assets/ringtone.mp3";
+const CryptoJS = require("crypto-js");
+const myCrypto = require("create-ecdh/browser");
+
 export default function Chat() {
   const [play, { stop }] = useSound(ringtone);
 
@@ -31,8 +35,36 @@ export default function Chat() {
     setLoading(true);
   }
   useEffect(() => {
-    if (socket) {
-      socket.emit("startSession", { userId: user._id });
+    if (socket && user) {
+      let client = myCrypto("secp256k1");
+      client.generateKeys();
+      let clientPublicKey = client.getPublicKey(null, "compressed");
+      console.log(clientPublicKey);
+      socket.emit("startSession", { userId: user._id, clientPublicKey });
+      socket.on("handshak", ({ serverPublicKey }) => {
+        let secretKey = client
+          .computeSecret(Buffer.from(serverPublicKey))
+          .toString("hex");
+        dispatch({
+          type: actionTypes.LOGIN,
+          payload: { ...user, secretKey },
+        });
+        console.log(secretKey);
+        socket.on("message", (message) => {
+          if (chats.find((chat) => chat._id === message.roomId))
+            dispatch(
+              addMessage(
+                message.roomId,
+                JSON.parse(
+                  CryptoJS.AES.decrypt(message.content, secretKey).toString(
+                    CryptoJS.enc.Utf8
+                  )
+                )
+              )
+            );
+          else dispatch(fetchRoom(user._id));
+        });
+      });
       socket.on("messageUpdate", ({ roomId, newMessage }) => {
         dispatch(updateMessage(roomId, newMessage));
       });
@@ -41,11 +73,6 @@ export default function Chat() {
       });
       socket.on("messageRead", ({ userId, roomIds, time }) => {
         dispatch(readMessage(roomIds, userId, time));
-      });
-      socket.on("message", (message) => {
-        if (chats.find((chat) => chat._id === message.roomId))
-          dispatch(addMessage(message.roomId, message.content));
-        else dispatch(fetchRoom(user._id));
       });
     }
   }, [loading]);

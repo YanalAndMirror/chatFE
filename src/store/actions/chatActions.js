@@ -1,5 +1,7 @@
 import * as actionTypes from "./types";
 import instance from "./instance";
+const CryptoJS = require("crypto-js");
+const myCrypto = require("create-ecdh/browser");
 
 export const addMessage = (roomId, content) => {
   return async (dispatch) => {
@@ -151,8 +153,21 @@ export const addUserToGroup = (roomId, phoneNumber) => {
 export const fetchRoom = (userId) => {
   return async (dispatch) => {
     try {
-      const res = await instance.get(`api/v1/rooms/user/${userId}`);
-      let rooms = res.data.map((room) => {
+      let client = myCrypto("secp256k1");
+      client.generateKeys();
+      let publicKey = client.getPublicKey(null, "compressed");
+      const res = await instance.put(`api/v1/rooms/user/${userId}`, {
+        publicKey,
+      });
+      var secretKey = client
+        .computeSecret(Buffer.from(res.data.publicKey))
+        .toString("hex");
+      let rooms = JSON.parse(
+        CryptoJS.AES.decrypt(res.data.ciphertext, secretKey).toString(
+          CryptoJS.enc.Utf8
+        )
+      );
+      rooms = rooms.map((room) => {
         if (room.type === "Private") {
           let otherUser = room.users.find((user) => user._id !== userId);
           if (otherUser.userName === "") room.name = otherUser.phoneNumber;

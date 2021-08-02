@@ -13,6 +13,7 @@ import Picker from "emoji-picker-react";
 import ReactGiphySearchbox from "react-giphy-searchbox";
 import instance from "../../store/actions/instance";
 import AudioReactRecorder, { RecordState } from "audio-react-recorder";
+const CryptoJS = require("crypto-js");
 
 export default function InputField({
   roomId,
@@ -32,6 +33,12 @@ export default function InputField({
     setChosenEmoji(false);
   };
   const user = useSelector((state) => state.user.user);
+  const encryptMessage = (content) => {
+    return CryptoJS.AES.encrypt(
+      JSON.stringify(content),
+      user.secretKey
+    ).toString();
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     if (input[roomId] === "") return;
@@ -44,7 +51,7 @@ export default function InputField({
     }
     socket.emit("chatMessage", {
       roomId,
-      content: content,
+      content: encryptMessage(content),
       userId: user.id,
     });
     setInput({ ...input, [roomId]: "" });
@@ -61,7 +68,7 @@ export default function InputField({
     }
     socket.emit("chatMessage", {
       roomId,
-      content: content,
+      content: encryptMessage(content),
       userId: user.id,
     });
     setChosenGiphy(false);
@@ -86,7 +93,7 @@ export default function InputField({
     }
     socket.emit("chatMessage", {
       roomId,
-      content: content,
+      content: encryptMessage(content),
       userId: user.id,
     });
     setChosenGiphy(false);
@@ -102,7 +109,7 @@ export default function InputField({
       content.longitude = position.coords.longitude;
       socket.emit("chatMessage", {
         roomId,
-        content: content,
+        content: encryptMessage(content),
         userId: user.id,
       });
     });
