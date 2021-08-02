@@ -142,7 +142,7 @@ export const addUserToGroup = (roomId, phoneNumber) => {
       const res = await instance.post(`/api/v1/rooms/${roomId}/add`, userToAdd);
       dispatch({
         type: actionTypes.ADD_USER_TO_GROUP,
-        payload: phoneNumber,
+        payload: { roomId, phoneNumber },
       });
     } catch (error) {
       console.log(error);

@@ -1,4 +1,4 @@
-import * as actionTypes from "../actions/types";
+import * as actionTypes from '../actions/types';
 const initialState = {
   chats: null,
   channels: null,
@@ -50,6 +50,13 @@ const reducer = (state = initialState, action) => {
         channels: action.payload,
       };
     }
+    case actionTypes.ADD_USER_TO_GROUP: {
+      return {
+        ...state,
+        channels: action.payload,
+      };
+    }
+
     case actionTypes.SEEN_MESSAGE: {
       let seenRoom = state.chats.find(
         (chat) => action.payload.roomId === chat._id

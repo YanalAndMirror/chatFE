@@ -1,14 +1,12 @@
 import React from 'react';
 import nophoto from '../../assets/no-photo.png';
 import ParticipantsModal from './ParticipantsModal';
-import { FaSearch } from 'react-icons/fa';
 import RoomSettingsModal from './RoomSettingsModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { GoSignOut } from 'react-icons/go';
 
 import { removeUserFromGroup } from '../../store/actions/chatActions';
 import Call from './Call';
-import SearchBar from './SearchBar';
 
 export default function RightHeader({
   thisRoom,
