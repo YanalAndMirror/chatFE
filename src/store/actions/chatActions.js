@@ -1,5 +1,5 @@
-import * as actionTypes from "./types";
-import instance from "./instance";
+import * as actionTypes from './types';
+import instance from './instance';
 
 export const addMessage = (roomId, content) => {
   return async (dispatch) => {
@@ -67,7 +67,7 @@ export const deleteMessage = (userId, messageId, roomId) => {
 export const createRoom = (room, userId) => {
   return async (dispatch) => {
     try {
-      if (room.type !== "Private") {
+      if (room.type !== 'Private') {
         room.admin = userId;
       }
       const formData = new FormData();
@@ -75,9 +75,9 @@ export const createRoom = (room, userId) => {
 
       const res = await instance.post(`/api/v1/rooms/user/${userId}`, formData);
       let thisRoom = res.data;
-      if (thisRoom.type === "Private") {
+      if (thisRoom.type === 'Private') {
         let otherUser = thisRoom.users.find((user) => user._id !== userId);
-        if (otherUser.userName === "") thisRoom.name = otherUser.phoneNumber;
+        if (otherUser.userName === '') thisRoom.name = otherUser.phoneNumber;
         else thisRoom.name = otherUser.userName;
         thisRoom.photo = otherUser.photo;
       }
@@ -140,7 +140,7 @@ export const addUserToGroup = (roomId, phoneNumber) => {
       const res = await instance.post(`/api/v1/rooms/${roomId}/add`, userToAdd);
       dispatch({
         type: actionTypes.ADD_USER_TO_GROUP,
-        payload: phoneNumber,
+        payload: { roomId, phoneNumber },
       });
     } catch (error) {
       console.log(error);
@@ -153,9 +153,9 @@ export const fetchRoom = (userId) => {
     try {
       const res = await instance.get(`api/v1/rooms/user/${userId}`);
       let rooms = res.data.map((room) => {
-        if (room.type === "Private") {
+        if (room.type === 'Private') {
           let otherUser = room.users.find((user) => user._id !== userId);
-          if (otherUser.userName === "") room.name = otherUser.phoneNumber;
+          if (otherUser.userName === '') room.name = otherUser.phoneNumber;
           else room.name = otherUser.userName;
           room.photo = otherUser.photo;
         }

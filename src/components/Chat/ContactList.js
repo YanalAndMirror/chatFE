@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import ContactItem from "./ContactItem";
-import SearchBar from "./SearchBar";
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import ContactItem from './ContactItem';
+import SearchBar from './SearchBar';
 
 export default function ContactList({ setRoomId, roomId }) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
 
   let chats = useSelector((state) => state.chats.chats);
   let channels = useSelector((state) => state.chats.channels);
@@ -31,7 +31,8 @@ export default function ContactList({ setRoomId, roomId }) {
   channels = channels
     .filter(
       (channel) =>
-        channel.name.toLowerCase().includes(query) && query.length > 2
+        (channel.name.toLowerCase().includes(query) && query.length > 2) ||
+        channel.users.map((u) => u.id).includes(user.id)
     )
     .map((channel) => {
       return (
@@ -46,7 +47,10 @@ export default function ContactList({ setRoomId, roomId }) {
     });
   let notSeenRoom = null;
   chats = chats
-    .filter((chat) => chat.name.toLowerCase().includes(query))
+    .filter(
+      (chat) =>
+        chat.name.toLowerCase().includes(query) && chat.type !== 'Channel'
+    )
     .map((chat) => {
       let notSeenCount = chat.messages
         .map((message) => {
@@ -57,37 +61,48 @@ export default function ContactList({ setRoomId, roomId }) {
           return thisCount.length;
         })
         .filter((a) => a).length;
-      if (!notSeenRoom && !roomId && notSeenCount === 0 && query === "") {
+      if (!notSeenRoom && !roomId && notSeenCount === 0 && query === '') {
         notSeenRoom = true;
         setRoomId(chat._id);
       }
       if (notSeenRoom) return;
       return (
-        <ContactItem
-          room={chat}
-          name={chat.name}
-          photo={chat.photo}
-          lastMessage={
-            chat.messages.length > 0
-              ? chat.messages[chat.messages.length - 1]
-              : ""
-          }
-          setRoomId={setRoomId}
-          notSeenCount={notSeenCount}
-        />
+        <>
+          <ContactItem
+            room={chat}
+            name={chat.name}
+            photo={chat.photo}
+            lastMessage={
+              chat.messages.length > 0
+                ? chat.messages[chat.messages.length - 1]
+                : ''
+            }
+            setRoomId={setRoomId}
+            notSeenCount={notSeenCount}
+          />
+          <hr class="border-0 bg-gray-200 text-gray-200 h-px"></hr>{' '}
+        </>
       );
     });
   return (
     <>
-      <SearchBar setQuery={setQuery} />
+      <SearchBar
+        setQuery={setQuery}
+        placeholder="Search for a conversation or explore channels"
+      />
 
       <div>
         <div class="bg-grey-lighter flex-1 overflow-auto">{chats}</div>
       </div>
-      <center>- Channels -</center>
-      <div>
-        <div class="bg-grey-lighter flex-1 overflow-auto">{channels}</div>
-      </div>
+      {channels.length > 0 && (
+        <>
+          {' '}
+          <center>- Channels -</center>
+          <div>
+            <div class="bg-grey-lighter flex-1 overflow-auto">{channels}</div>
+          </div>
+        </>
+      )}
     </>
   );
 }
