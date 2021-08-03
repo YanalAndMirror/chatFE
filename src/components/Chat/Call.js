@@ -242,6 +242,7 @@ export default function Call({
                     />
                     <center>
                       <video
+                        muted
                         ref={userVideo2}
                         autoPlay
                         style={{ width: "150px" }}

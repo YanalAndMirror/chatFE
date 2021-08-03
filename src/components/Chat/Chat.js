@@ -29,7 +29,7 @@ export default function Chat() {
   let chats = useSelector((state) => state.chats.chats);
 
   useEffect(() => {
-    setSocket(io("localhost:8000"));
+    setSocket(io("34.141.93.52:8000"));
   }, []);
   if (chats && socket && loading === false) {
     setLoading(true);
