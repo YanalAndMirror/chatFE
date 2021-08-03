@@ -22,7 +22,7 @@ export default function ContactItem({
           <div class="flex items-bottom justify-between">
             <p class="text-grey-darkest">{name}</p>
             <p class="text-xs text-grey-darkest">
-              {lastMessage.createdAt
+              {lastMessage?.createdAt
                 ? new Date().toISOString().substr(0, 10) ===
                   lastMessage.createdAt.toString().substr(0, 10)
                   ? lastMessage.createdAt.toString().substr(11, 5)
@@ -31,9 +31,11 @@ export default function ContactItem({
             </p>
           </div>
           <p class="text-grey-dark mt-1 text-sm">
-            {typeof lastMessage.content === "string" || !lastMessage.content
-              ? lastMessage.content
-              : lastMessage.content.text ?? `[${lastMessage.content.type}]`}
+            {lastMessage
+              ? typeof lastMessage.content === "string" || !lastMessage.content
+                ? lastMessage.content
+                : lastMessage.content.text ?? `[${lastMessage.content.type}]`
+              : ""}
             {notSeenCount > 0 && (
               <span class="float-right inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-indigo-100 bg-indigo-700 rounded">
                 {notSeenCount}

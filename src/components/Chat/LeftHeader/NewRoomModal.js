@@ -1,32 +1,33 @@
 // React imports
-import { useEffect, Fragment, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, Fragment, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 // UI imports
-import { Dialog, Transition, RadioGroup } from '@headlessui/react';
+import { Dialog, Transition, RadioGroup } from "@headlessui/react";
 
 // Actions Imports
-import { createRoom } from '../../../store/actions/chatActions';
+import { createRoom } from "../../../store/actions/chatActions";
 
 // utils Imports
-import { useDropzone } from 'react-dropzone';
+import { useDropzone } from "react-dropzone";
 
 // Assets Imports
-import { RiMessage2Fill } from 'react-icons/ri';
+import { RiMessage2Fill } from "react-icons/ri";
+import Select from "react-select";
 
 // Selector options
 const options = [
   {
-    name: 'Private',
-    details: '1 on 1 private chat',
+    name: "Private",
+    details: "1 on 1 private chat",
   },
   {
-    name: 'Group',
-    details: 'group chat with multiple users',
+    name: "Group",
+    details: "group chat with multiple users",
   },
   {
-    name: 'Channel',
-    details: 'a channel that only you can send to',
+    name: "Channel",
+    details: "a channel that only you can send to",
   },
 ];
 
@@ -36,14 +37,23 @@ export default function NewRoomModal() {
 
   // store fetching
   const user = useSelector((state) => state.user.user);
+  const chats = useSelector((state) => state.chats.chats);
+
+  const selectOptions = chats
+    .filter((chat) => chat.type === "Private")
+    .map((chat) => ({
+      value: chat.users.find((a) => a._id !== user._id)._id,
+      label: chat.name,
+    }));
 
   // hooks
+  const [select, setSelect] = useState([]);
   let [isOpen, setIsOpen] = useState(false);
   const [files, setFiles] = useState([]);
   const [selected, setSelected] = useState(options[0]);
   const [room, setRoom] = useState({});
   const { getRootProps, getInputProps } = useDropzone({
-    accept: 'image/*',
+    accept: "image/*",
     onDrop: (acceptedFiles) => {
       setRoom({ ...room, photo: acceptedFiles[0] });
 
@@ -66,34 +76,34 @@ export default function NewRoomModal() {
 
   //   react Dropzone styling
   const thumbsContainer = {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
     marginTop: 16,
   };
 
   const thumb = {
-    display: 'inline-flex',
+    display: "inline-flex",
     borderRadius: 2,
-    border: '1px solid #eaeaea',
+    border: "1px solid #eaeaea",
     marginBottom: 8,
     marginRight: 8,
     width: 100,
     height: 100,
     padding: 4,
-    boxSizing: 'border-box',
+    boxSizing: "border-box",
   };
 
   const thumbInner = {
-    display: 'flex',
+    display: "flex",
     minWidth: 0,
-    overflow: 'hidden',
+    overflow: "hidden",
   };
 
   const img = {
-    display: 'block',
-    width: 'auto',
-    height: '100%',
+    display: "block",
+    width: "auto",
+    height: "100%",
   };
 
   const thumbs = files.map((file) => (
@@ -114,7 +124,13 @@ export default function NewRoomModal() {
     setIsOpen(true);
   };
   const handleSubmit = () => {
-    dispatch(createRoom({ ...room, type: selected.name }, user.id));
+    let to = room.to;
+    if (selected.name !== "Private") {
+      to = select.map((s) => s.value).join(",");
+    }
+    console.log({ ...room, type: selected.name, to });
+    dispatch(createRoom({ ...room, type: selected.name, to }, user.id));
+    setRoom({});
     closeModal();
   };
 
@@ -188,11 +204,11 @@ export default function NewRoomModal() {
                         className={({ active, checked }) =>
                           `${
                             active
-                              ? 'ring-2 ring-offset-2 ring-offset-sky-300 ring-indigo-900 ring-opacity-60'
-                              : ''
+                              ? "ring-2 ring-offset-2 ring-offset-sky-300 ring-indigo-900 ring-opacity-60"
+                              : ""
                           }
                   ${
-                    checked ? 'bg-sky-900 bg-opacity-75 text-black' : 'bg-white'
+                    checked ? "bg-sky-900 bg-opacity-75 text-black" : "bg-white"
                   }
                     relative rounded-lg shadow-md px-5 py-4 cursor-pointer flex focus:outline-none`
                         }
@@ -205,7 +221,7 @@ export default function NewRoomModal() {
                                   <RadioGroup.Label
                                     as="p"
                                     className={`font-medium  ${
-                                      checked ? 'text-black' : 'text-gray-900'
+                                      checked ? "text-black" : "text-gray-900"
                                     }`}
                                   >
                                     {option.name}
@@ -213,11 +229,11 @@ export default function NewRoomModal() {
                                   <RadioGroup.Description
                                     as="span"
                                     className={`inline ${
-                                      checked ? 'text-sky-100' : 'text-gray-500'
+                                      checked ? "text-sky-100" : "text-gray-500"
                                     }`}
                                   >
-                                    <span>{option.details}</span>{' '}
-                                    <span aria-hidden="true">&middot;</span>{' '}
+                                    <span>{option.details}</span>{" "}
+                                    <span aria-hidden="true">&middot;</span>{" "}
                                   </RadioGroup.Description>
                                 </div>
                               </div>
@@ -235,25 +251,36 @@ export default function NewRoomModal() {
                 </RadioGroup>
                 {/* // - Select menu end - // */}
                 {/* // checking room type // */}
-                {selected.name === 'Channel' ? (
+                {selected.name === "Channel" ? (
                   <></>
                 ) : (
                   <div className="mt-2">
-                    <p className="text-sm text-gray-500">
-                      Phone Number:
-                      <input
-                        class="input border border-gray-400 appearance-none rounded w-full px-3 py-3 pt-2 pb-2 focus focus:border-indigo-600 focus:outline-none active:outline-none active:border-indigo-600"
-                        id="email"
-                        type="text"
-                        autofocus
-                        onChange={(event) => {
-                          setRoom({ ...room, to: event.target.value });
-                        }}
+                    {selected.name === "Private" ? (
+                      <p className="text-sm text-gray-500">
+                        Phone Number:
+                        <input
+                          class="input border border-gray-400 appearance-none rounded w-full px-3 py-3 pt-2 pb-2 focus focus:border-indigo-600 focus:outline-none active:outline-none active:border-indigo-600"
+                          id="email"
+                          type="text"
+                          autofocus
+                          onChange={(event) => {
+                            setRoom({ ...room, to: event.target.value });
+                          }}
+                        />
+                      </p>
+                    ) : (
+                      <Select
+                        onChange={(e) => setSelect(e)}
+                        isMulti
+                        name="colors"
+                        options={selectOptions}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
                       />
-                    </p>
+                    )}
                   </div>
                 )}
-                {selected.name !== 'Private' && (
+                {selected.name !== "Private" && (
                   <>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">
@@ -274,11 +301,11 @@ export default function NewRoomModal() {
                       <section
                         className="container"
                         style={{
-                          width: '300px',
-                          backgroundColor: 'lightgrey',
+                          width: "300px",
+                          backgroundColor: "lightgrey",
                         }}
                       >
-                        <div {...getRootProps({ className: 'dropzone' })}>
+                        <div {...getRootProps({ className: "dropzone" })}>
                           <input {...getInputProps()} />
                           <p>
                             Drag 'n' drop some files here, or click to select
@@ -286,7 +313,7 @@ export default function NewRoomModal() {
                           </p>
                         </div>
                         <aside style={thumbsContainer}>{thumbs}</aside>
-                      </section>{' '}
+                      </section>{" "}
                     </div>
                   </>
                 )}

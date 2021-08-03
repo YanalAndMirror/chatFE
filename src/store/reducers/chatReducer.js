@@ -1,4 +1,4 @@
-import * as actionTypes from '../actions/types';
+import * as actionTypes from "../actions/types";
 const initialState = {
   chats: null,
   channels: null,
@@ -42,6 +42,33 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         chats: newChatAfterMessage,
+      };
+    }
+    case actionTypes.ADD_USER_TO_GROUP: {
+      let newChannelAfterUser = state.channels.map((channel) => {
+        if (action.payload.roomId === channel._id) {
+          channel.users = [...channel.users, action.payload.user];
+        }
+        return channel;
+      });
+      return {
+        ...state,
+        channels: newChannelAfterUser,
+      };
+    }
+    case actionTypes.REMOVE_USER_FROM_GROUP: {
+      let newChannelAfterUserRemove = state.channels.map((channel) => {
+        if (action.payload.roomId === channel._id) {
+          console.log("here");
+          channel.users = channel.users.filter(
+            (user) => user._id !== action.payload.user._id
+          );
+        }
+        return channel;
+      });
+      return {
+        ...state,
+        channels: newChannelAfterUserRemove,
       };
     }
     case actionTypes.FETCH_CHANNELS: {

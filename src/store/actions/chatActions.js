@@ -111,11 +111,11 @@ export const updateRoom = (roomId, roomInfo) => {
   };
 };
 
-export const removeUserFromGroup = (roomId, phoneNumber) => {
+export const removeUserFromGroup = (roomId, user) => {
   return async (dispatch) => {
     try {
       const userToRemove = {
-        to: phoneNumber,
+        to: user.phoneNumber,
       };
       console.log(roomId);
       const res = await instance.post(
@@ -124,7 +124,7 @@ export const removeUserFromGroup = (roomId, phoneNumber) => {
       );
       dispatch({
         type: actionTypes.REMOVE_USER_FROM_GROUP,
-        payload: phoneNumber,
+        payload: { roomId, user },
       });
     } catch (error) {
       console.log(error);
@@ -132,17 +132,17 @@ export const removeUserFromGroup = (roomId, phoneNumber) => {
   };
 };
 
-export const addUserToGroup = (roomId, phoneNumber) => {
+export const addUserToGroup = (roomId, user) => {
   return async (dispatch) => {
     try {
       const userToAdd = {
-        to: phoneNumber,
+        to: user.phoneNumber,
       };
       console.log(roomId);
       const res = await instance.post(`/api/v1/rooms/${roomId}/add`, userToAdd);
       dispatch({
         type: actionTypes.ADD_USER_TO_GROUP,
-        payload: { roomId, phoneNumber },
+        payload: { roomId, user },
       });
     } catch (error) {
       console.log(error);

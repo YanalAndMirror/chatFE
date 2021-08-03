@@ -65,7 +65,7 @@ export default function Room({ roomId, socket, play, stop }) {
         {thisRoom.type === "Channel" &&
           !thisRoom.users.map((u) => u.id).includes(user.id) && (
             <center
-              onClick={() => dispatch(addUserToGroup(roomId, user.phoneNumber))}
+              onClick={() => dispatch(addUserToGroup(roomId, user))}
               class="bg-indigo-600 hover:bg-blue-dark text-white font-bold py-3 px-6 rounded cursor-pointer"
             >
               Join
