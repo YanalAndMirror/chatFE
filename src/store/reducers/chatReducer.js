@@ -19,10 +19,17 @@ const reducer = (state = initialState, action) => {
       if (roomExist) {
         return state;
       }
-      return {
-        ...state,
-        chats: [...state.chats, { ...action.payload, messages: [] }],
-      };
+      if (action.payload.type !== "Channel") {
+        return {
+          ...state,
+          chats: [...state.chats, { ...action.payload, messages: [] }],
+        };
+      } else {
+        return {
+          ...state,
+          channels: [...state.channels, { ...action.payload, messages: [] }],
+        };
+      }
     }
     case actionTypes.ADD_MESSAGE: {
       let newChatAfterMessage = state.chats.map((chat) => {
@@ -44,7 +51,7 @@ const reducer = (state = initialState, action) => {
         chats: newChatAfterMessage,
       };
     }
-    case actionTypes.ADD_USER_TO_GROUP: {
+    case actionTypes.ADD_USER_TO_CHANNEL: {
       let newChannelAfterUser = state.channels.map((channel) => {
         if (action.payload.roomId === channel._id) {
           channel.users = [...channel.users, action.payload.user];
@@ -56,7 +63,19 @@ const reducer = (state = initialState, action) => {
         channels: newChannelAfterUser,
       };
     }
-    case actionTypes.REMOVE_USER_FROM_GROUP: {
+    case actionTypes.ADD_USER_TO_GROUP: {
+      let newChatsAfterUser = state.chats.map((chat) => {
+        if (action.payload.roomId === chat._id) {
+          chat.users = [...chat.users, action.payload.user];
+        }
+        return chat;
+      });
+      return {
+        ...state,
+        chats: newChatsAfterUser,
+      };
+    }
+    case actionTypes.REMOVE_USER_FROM_CHANNEL: {
       let newChannelAfterUserRemove = state.channels.map((channel) => {
         if (action.payload.roomId === channel._id) {
           console.log("here");
@@ -69,6 +88,20 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         channels: newChannelAfterUserRemove,
+      };
+    }
+    case actionTypes.REMOVE_USER_FROM_GROUP: {
+      let newChatsAfterUserRemove = state.chats.map((chat) => {
+        if (action.payload.roomId === chat._id) {
+          chat.users = chat.users.filter(
+            (user) => user._id !== action.payload.user._id
+          );
+        }
+        return chat;
+      });
+      return {
+        ...state,
+        chats: newChatsAfterUserRemove,
       };
     }
     case actionTypes.FETCH_CHANNELS: {

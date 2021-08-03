@@ -20,7 +20,7 @@ export default function Room({ roomId, socket, play, stop }) {
     state.chats.chats?.find((chat) => chat._id === roomId)
   );
   let channels = useSelector((state) => state.chats.channels);
-  if (!thisRoom) {
+  if (!thisRoom || thisRoom.type === "Channel") {
     thisRoom = channels?.find((chat) => chat._id === roomId);
   }
   const user = useSelector((state) => state.user.user);
@@ -63,7 +63,7 @@ export default function Room({ roomId, socket, play, stop }) {
           />
         )}
         {thisRoom.type === "Channel" &&
-          !thisRoom.users.map((u) => u.id).includes(user.id) && (
+          !thisRoom.users.find((u) => u.id === user.id) && (
             <center
               onClick={() => dispatch(addUserToGroup(roomId, user))}
               class="bg-indigo-600 hover:bg-blue-dark text-white font-bold py-3 px-6 rounded cursor-pointer"

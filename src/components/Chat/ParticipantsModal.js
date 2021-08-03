@@ -1,17 +1,27 @@
-import { Dialog, Transition, RadioGroup } from '@headlessui/react';
-import { Fragment, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { FaUsers } from 'react-icons/fa';
+import { Dialog, Transition, RadioGroup } from "@headlessui/react";
+import { Fragment, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { FaUsers } from "react-icons/fa";
 import {
   addUserToGroup,
   removeUserFromGroup,
-} from '../../store/actions/chatActions';
+} from "../../store/actions/chatActions";
+import Select from "react-select";
 
 export default function ParticipantsModal({ room }) {
   let [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   const [phoneNumber, setPhoneNumber] = useState();
+  const chats = useSelector((state) => state.chats.chats);
+  const [select, setSelect] = useState([]);
+
+  const selectOptions = chats
+    .filter((chat) => chat.type === "Private")
+    .map((chat) => ({
+      value: chat.users.find((a) => a._id !== user._id),
+      label: chat.name,
+    }));
 
   function closeModal() {
     setIsOpen(false);
@@ -21,11 +31,14 @@ export default function ParticipantsModal({ room }) {
     setIsOpen(true);
   }
   const handleAdd = () => {
-    dispatch(addUserToGroup(room._id, phoneNumber));
+    select.forEach((result) =>
+      dispatch(addUserToGroup(room._id, result.value, true))
+    );
     closeModal();
   };
-  const handleRemove = (phoneNumber) => {
-    dispatch(removeUserFromGroup(room._id, phoneNumber));
+  const handleRemove = (user) => {
+    dispatch(removeUserFromGroup(room._id, user, true));
+
     closeModal();
   };
 
@@ -35,11 +48,11 @@ export default function ParticipantsModal({ room }) {
       <div class=" bg-white rounded-lg flex items-center justify-between space-x-8">
         <div class="flex-1 flex justify-between items-center">
           <div class="h-7 pl-2 w-48 bg-gray-300 rounded">
-            {_user.userName === '' ? _user.phoneNumber : _user.userName}
+            {_user.userName === "" ? _user.phoneNumber : _user.userName}
           </div>
           {room.admin === user.id && (
             <button
-              onClick={() => handleRemove(_user.phoneNumber)}
+              onClick={() => handleRemove(_user)}
               class="w-24 h-7 rounded bg-indigo-600 text-white"
             >
               Remove
@@ -105,14 +118,13 @@ export default function ParticipantsModal({ room }) {
                 <div className="mt-4">
                   <form onSubmit={handleAdd}>
                     <div class="mb-4 relative">
-                      <input
-                        class="input border border-gray-400 appearance-none rounded w-full px-3 py-3 pt-3 pb-2 focus focus:border-indigo-600 focus:outline-none active:outline-none active:border-indigo-600"
-                        id="phoneNumber"
-                        type="text"
-                        autofocus
-                        onChange={(event) => {
-                          setPhoneNumber(event.target.value);
-                        }}
+                      <Select
+                        onChange={(e) => setSelect(e)}
+                        isMulti
+                        name="colors"
+                        options={selectOptions}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
                       />
                     </div>
                     <button
