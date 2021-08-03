@@ -15,7 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 export default function Call({
   socket,
   userVideo,
-
+  roomType,
   membersList,
   roomId,
   play,
@@ -159,7 +159,7 @@ export default function Call({
   };
   return (
     <>
-      {membersList.length === 2 && (
+      {roomType === "Private" && (
         <>
           <BsFillCameraVideoFill
             onClick={() => {

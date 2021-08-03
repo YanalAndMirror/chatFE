@@ -56,6 +56,7 @@ export default function RightHeader({
             membersList={thisRoom.users}
             play={play}
             roomId={thisRoom._id}
+            roomType={thisRoom.type}
             stop={stop}
           />
           <ParticipantsModal room={thisRoom} />

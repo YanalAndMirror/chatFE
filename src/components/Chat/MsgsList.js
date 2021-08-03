@@ -32,6 +32,26 @@ export default function MsgsList({
 
   let messageDate = "";
   let roomMessages = messages.map((message) => {
+    let e2e = <></>;
+    if (messageDate === "")
+      e2e = (
+        <div class="flex justify-center mb-4">
+          <div
+            class="rounded py-2 px-4"
+            style={{ "background-color": "#FCF4CB" }}
+          >
+            <p
+              class="text-xs"
+              onClick={() =>
+                alert("your messages is encrypted with key :" + user.secretKey)
+              }
+            >
+              Messages to this chat and calls are now secured with end-to-end
+              encryption. Tap for more info.
+            </p>
+          </div>
+        </div>
+      );
     let thisDate = "";
     if (messageDate !== message.createdAt.toString().substr(0, 10)) {
       messageDate = message.createdAt.toString().substr(0, 10);
@@ -46,6 +66,7 @@ export default function MsgsList({
     }
     return (
       <>
+        {e2e}
         <center>{thisDate}</center>
         <IncomingMsg
           roomId={roomId}
