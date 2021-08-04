@@ -1,13 +1,15 @@
-import { Menu, Transition } from '@headlessui/react';
-import { Fragment, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { signout } from '../../store/actions/authActions';
-import ParticipantsModal from './ParticipantsModal';
+import { Fragment, useEffect, useRef, useState } from "react"; //Remove unused imports
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { Menu, Transition } from "@headlessui/react";
+import { signout } from "../../store/actions/authActions"; //Remove unused import
+
+//Components
+import ParticipantsModal from "./ParticipantsModal";
 
 export default function ChatMenu({ thisRoom }) {
   const history = useHistory();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(); //Unused
 
   const user = useSelector((state) => state.user.user);
   return (
@@ -29,7 +31,7 @@ export default function ChatMenu({ thisRoom }) {
               ></path>
             </svg>
           </div>
-        </Menu.Button>{' '}
+        </Menu.Button>
       </div>
       <Transition
         as={Fragment}
@@ -47,14 +49,14 @@ export default function ChatMenu({ thisRoom }) {
                 <Menu.Item>
                   {({ active }) => (
                     <button
-                      onClick={() => history.push('/settings')}
+                      onClick={() => history.push("/settings")}
                       className="
                     text-gray-900 group flex rounded-md items-center w-full px-2 py-2 text-sm"
                     >
                       Settings
                     </button>
                   )}
-                </Menu.Item>{' '}
+                </Menu.Item>
               </>
             )}
 
@@ -64,7 +66,7 @@ export default function ChatMenu({ thisRoom }) {
             <Menu.Item>
               {({ active }) => (
                 <button
-                  onClick={() => history.push('/settings')}
+                  onClick={() => history.push("/settings")}
                   className="
                     text-gray-900 group flex rounded-md items-center w-full px-2 py-2 text-sm"
                 >

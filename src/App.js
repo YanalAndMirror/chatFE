@@ -1,13 +1,13 @@
 // React imports
-import { Route, Switch } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Route, Switch } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 // components imports
-import Login from './components/Auth/Login';
-import Chat from './components/Chat/Chat';
+import Login from "./components/Auth/Login";
+import Chat from "./components/Chat/Chat";
 
 // styles import
-import './App.css';
+import "./App.css";
 
 function App() {
   // fetching store
@@ -21,6 +21,7 @@ function App() {
     // routes
     <Switch>
       <Route exact path="/" component={Chat} />
+      {/**Create a page not found component */}
       <Route render={() => <h1>page not found</h1>} />
     </Switch>
   );

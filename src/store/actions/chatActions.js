@@ -15,6 +15,7 @@ export const addMessage = (roomId, content) => {
     }
   };
 };
+
 export const seeMessage = (roomId, userId, time) => {
   return async (dispatch) => {
     try {
@@ -27,6 +28,7 @@ export const seeMessage = (roomId, userId, time) => {
     }
   };
 };
+
 export const readMessage = (roomIds, userId, time) => {
   return async (dispatch) => {
     try {
@@ -43,7 +45,7 @@ export const readMessage = (roomIds, userId, time) => {
 export const updateMessage = (roomId, newMessage) => {
   return async (dispatch) => {
     try {
-      console.log();
+      console.log(); //Remove console log
       dispatch({
         type: actionTypes.UPDATE_MESSAGE,
         payload: { roomId, newMessage },
@@ -66,6 +68,7 @@ export const deleteMessage = (userId, messageId, roomId) => {
     }
   };
 };
+
 export const createRoom = (room, userId) => {
   return async (dispatch) => {
     try {
@@ -96,7 +99,7 @@ export const createRoom = (room, userId) => {
 export const updateRoom = (roomId, roomInfo) => {
   return async (dispatch) => {
     try {
-      console.log(roomInfo);
+      console.log(roomInfo); //Remove console log
       const formData = new FormData();
       for (const key in roomInfo) formData.append(key, roomInfo[key]);
 
@@ -117,7 +120,7 @@ export const removeUserFromGroup = (roomId, user, group = false) => {
       const userToRemove = {
         to: user.phoneNumber,
       };
-      console.log(roomId);
+      console.log(roomId); //Remove console log
       const res = await instance.post(
         `/api/v1/rooms/${roomId}/remove`,
         userToRemove
@@ -178,6 +181,7 @@ export const fetchRoom = (userId) => {
           CryptoJS.enc.Utf8
         )
       );
+
       rooms = rooms.map((room) => {
         if (room.type === "Private") {
           let otherUser = room.users.find((user) => user._id !== userId);

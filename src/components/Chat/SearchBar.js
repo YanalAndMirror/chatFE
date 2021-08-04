@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react"; //Importing React is not needed
 
 export default function SearchBar({ setQuery, placeholder }) {
   return (

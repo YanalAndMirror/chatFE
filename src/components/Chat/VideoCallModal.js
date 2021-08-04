@@ -1,5 +1,5 @@
-import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useState } from 'react';
+import { Fragment, useState } from "react";
+import { Dialog, Transition } from "@headlessui/react";
 
 export default function VideoCallModal({ userVideo, _isOpen, socket, roomId }) {
   let [isOpen, setIsOpen] = useState(_isOpen);
@@ -56,14 +56,15 @@ export default function VideoCallModal({ userVideo, _isOpen, socket, roomId }) {
                 >
                   Video Call
                 </Dialog.Title>
-                <video ref={userVideo} autoPlay style={{ width: '600px' }} />
+                {/**Remove inline styling */}
+                <video ref={userVideo} autoPlay style={{ width: "600px" }} />
 
                 <div className="mt-4">
                   <button
                     type="button"
                     className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
                     onClick={() => {
-                      socket.emit('endCall', { roomId });
+                      socket.emit("endCall", { roomId });
                       closeModal();
                     }}
                   >

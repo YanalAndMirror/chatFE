@@ -1,12 +1,18 @@
-import React from "react";
-import nophoto from "../../assets/no-photo.png";
-import ParticipantsModal from "./ParticipantsModal";
-import RoomSettingsModal from "./RoomSettingsModal";
+import React from "react"; //Importing React is not needed
 import { useDispatch, useSelector } from "react-redux";
+
 import { GoSignOut } from "react-icons/go";
 
-import { removeUserFromGroup } from "../../store/actions/chatActions";
+//Assets
+import nophoto from "../../assets/no-photo.png";
+
+//Components
 import Call from "./Call";
+import ParticipantsModal from "./ParticipantsModal";
+import RoomSettingsModal from "./RoomSettingsModal";
+
+//Actions
+import { removeUserFromGroup } from "../../store/actions/chatActions";
 
 export default function RightHeader({
   thisRoom,
@@ -17,10 +23,13 @@ export default function RightHeader({
   setQuery,
 }) {
   const user = useSelector((state) => state.user.user);
+
   const dispatch = useDispatch();
+
   const membersList = thisRoom.users.map((_user) =>
     _user.userName === "" ? _user.phoneNumber : _user.userName
   );
+
   return (
     <div>
       <div class="py-2 px-3 bg-grey-lighter flex flex-row justify-between items-center">

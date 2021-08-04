@@ -1,4 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react"; //Importing React is not needed
+
+//Components
 import IncomingMsg from "./IncomingMsg";
 
 export default function MsgsList({
@@ -38,7 +40,7 @@ export default function MsgsList({
         <div class="flex justify-center mb-4">
           <div
             class="rounded py-2 px-4"
-            style={{ "background-color": "#FCF4CB" }}
+            style={{ "background-color": "#FCF4CB" }} //Remove inline styling
           >
             <p
               class="text-xs"
@@ -58,7 +60,7 @@ export default function MsgsList({
       thisDate = (
         <div
           class={"text-xs m-1.5 w-24 right-0  rounded py-1 px-3"}
-          style={{ backgroundColor: "#E1F3FB" }}
+          style={{ backgroundColor: "#E1F3FB" }} //Remove inline styling
         >
           {messageDate}
         </div>
@@ -81,6 +83,7 @@ export default function MsgsList({
     );
   });
   return (
+    //Remove inline styling
     <div class="flex-1 overflow-auto" style={{ backgroundColor: "#DAD3CC" }}>
       <div id={"el"} ref={el} class="py-2 px-3">
         {roomMessages}

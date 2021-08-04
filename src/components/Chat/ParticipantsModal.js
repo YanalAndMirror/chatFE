@@ -1,19 +1,25 @@
-import { Dialog, Transition, RadioGroup } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+import { Dialog, Transition, RadioGroup } from "@headlessui/react"; //Remove unused import
+import Select from "react-select";
 import { FaUsers } from "react-icons/fa";
+
+//Actions
 import {
   addUserToGroup,
   removeUserFromGroup,
 } from "../../store/actions/chatActions";
-import Select from "react-select";
 
 export default function ParticipantsModal({ room }) {
   let [isOpen, setIsOpen] = useState(false);
+
   const dispatch = useDispatch();
+
   const user = useSelector((state) => state.user.user);
-  const [phoneNumber, setPhoneNumber] = useState();
   const chats = useSelector((state) => state.chats.chats);
+
+  const [phoneNumber, setPhoneNumber] = useState(); //Unused
   const [select, setSelect] = useState([]);
 
   const selectOptions = chats
@@ -36,9 +42,9 @@ export default function ParticipantsModal({ room }) {
     );
     closeModal();
   };
+
   const handleRemove = (user) => {
     dispatch(removeUserFromGroup(room._id, user, true));
-
     closeModal();
   };
 
@@ -61,6 +67,7 @@ export default function ParticipantsModal({ room }) {
         </div>
       </div>
     ));
+
   return (
     <>
       <div class="ml-6">

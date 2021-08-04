@@ -1,13 +1,16 @@
-import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import { useSelector } from "react-redux";
+
+import { Dialog, Transition } from "@headlessui/react";
 import Select from "react-select";
 
 export default function MessageModel({ isOpen, setIsOpen, socket }) {
   const [input, setInput] = useState(false);
   const [select, setSelect] = useState([]);
+
   const chats = useSelector((state) => state.chats.chats);
   const user = useSelector((state) => state.user.user);
+
   const options = chats.map((chat) => ({ value: chat._id, label: chat.name }));
 
   function closeModal() {
@@ -37,7 +40,6 @@ export default function MessageModel({ isOpen, setIsOpen, socket }) {
         });
       });
     }
-
     closeModal();
   };
 

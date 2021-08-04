@@ -1,4 +1,4 @@
-import * as actionTypes from '../actions/types';
+import * as actionTypes from "../actions/types";
 const initialState = {
   user: null,
 };
@@ -11,12 +11,14 @@ const reducer = (state = initialState, action) => {
         user: action.payload,
       };
     }
+
     case actionTypes.SIGNOUT: {
       return {
         ...state,
         user: null,
       };
     }
+
     case actionTypes.UPDATE_USER: {
       console.log(action.payload);
       return {

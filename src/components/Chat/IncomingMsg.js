@@ -1,17 +1,20 @@
-import React, { useState } from "react";
-import { GoCheck } from "react-icons/go";
-import { BiCheckDouble } from "react-icons/bi";
-import { IoIosArrowDown } from "react-icons/io";
-import { MdNotInterested } from "react-icons/md";
-
+import React, { useState } from "react"; //Importing React is not needed
 import { useDispatch } from "react-redux";
-import { deleteMessage } from "../../store/actions/chatActions";
-import { confirmAlert } from "react-confirm-alert"; // Import
 
 import axios from "axios";
 import fileDownload from "js-file-download";
 import Linkify from "react-linkify";
-import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+import { confirmAlert } from "react-confirm-alert";
+
+//Styling
+import { GoCheck } from "react-icons/go";
+import { BiCheckDouble } from "react-icons/bi";
+import { IoIosArrowDown } from "react-icons/io";
+import { MdNotInterested } from "react-icons/md";
+import "react-confirm-alert/src/react-confirm-alert.css";
+
+//Actions
+import { deleteMessage } from "../../store/actions/chatActions";
 
 export default function IncomingMsg({
   message,
@@ -23,11 +26,14 @@ export default function IncomingMsg({
   inputReply,
 }) {
   const dispatch = useDispatch();
+
   const [isShown, setIsShown] = useState(false);
   const [menu, setMenu] = useState(false);
+
   // Get message text
   let text;
   let messageType;
+
   const handleDownload = (url, filename) => {
     axios
       .get(url, {
@@ -37,6 +43,7 @@ export default function IncomingMsg({
         fileDownload(res.data, filename);
       });
   };
+
   if (message.content.type) {
     messageType = message.content.type;
   } else {
@@ -150,21 +157,23 @@ export default function IncomingMsg({
 
   // Dropdown menu
   const myMenu = true;
+
   const openMenu = () => {
     setMenu(true);
     window.removeEventListener("mousedown", closeMenu);
     window.addEventListener("mousedown", closeMenu);
   };
+
   const closeMenu = () => {
     if (myMenu === true) {
       setIsShown(false);
       setMenu(false);
-
       window.removeEventListener("mousedown", closeMenu);
     } else {
       myMenu = false;
     }
   };
+
   return (
     <div class={sameUser ? "flex justify-end mb-2" : ""}>
       <div
@@ -179,14 +188,14 @@ export default function IncomingMsg({
             )) +
           "/12 right-0  rounded py-1 px-3"
         }
-        style={{ backgroundColor: sameUser ? "#E2F7CB" : "#F2F2F2" }}
+        style={{ backgroundColor: sameUser ? "#E2F7CB" : "#F2F2F2" }} //Remove inline styling
       >
         {type !== "Private" && !sameUser ? (
           <p class="text-sm text-teal">
             {message.user.userName === ""
               ? message.user.phoneNumber
               : message.user.userName}
-            :{" "}
+            :
           </p>
         ) : (
           ""

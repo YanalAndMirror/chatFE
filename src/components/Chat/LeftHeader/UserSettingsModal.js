@@ -1,23 +1,23 @@
 // react imports
-import { Fragment, useState } from 'react';
-import { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { Fragment, useState } from "react";
+import { useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 // assets imports
-import { GoSignOut } from 'react-icons/go';
-import { RiRefreshLine } from 'react-icons/ri';
-import { MdSettings } from 'react-icons/md';
+import { GoSignOut } from "react-icons/go";
+import { RiRefreshLine } from "react-icons/ri";
+import { MdSettings } from "react-icons/md";
 
 // actions imports
-import { updateUserData } from '../../../store/actions/userActions';
-import { signout } from '../../../store/actions/authActions';
+import { updateUserData } from "../../../store/actions/userActions";
+import { signout } from "../../../store/actions/authActions";
 
 // UI imports
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog, Transition } from "@headlessui/react";
 
 // utils Imports
-import { useDropzone } from 'react-dropzone';
+import { useDropzone } from "react-dropzone";
 
 export default function UserSettingsModal({ socket }) {
   // utils constants
@@ -26,34 +26,34 @@ export default function UserSettingsModal({ socket }) {
 
   // start dropzone styling //
   const thumbsContainer = {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
     marginTop: 16,
   };
 
   const thumb = {
-    display: 'inline-flex',
+    display: "inline-flex",
     borderRadius: 2,
-    border: '1px solid #eaeaea',
+    border: "1px solid #eaeaea",
     marginBottom: 8,
     marginRight: 8,
     width: 100,
     height: 100,
     padding: 4,
-    boxSizing: 'border-box',
+    boxSizing: "border-box",
   };
 
   const thumbInner = {
-    display: 'flex',
+    display: "flex",
     minWidth: 0,
-    overflow: 'hidden',
+    overflow: "hidden",
   };
 
   const img = {
-    display: 'block',
-    width: 'auto',
-    height: '100%',
+    display: "block",
+    width: "auto",
+    height: "100%",
   };
   // - end dropzone styling - //
 
@@ -70,7 +70,7 @@ export default function UserSettingsModal({ socket }) {
   const [files, setFiles] = useState([]);
 
   const { getRootProps, getInputProps } = useDropzone({
-    accept: 'image/*',
+    accept: "image/*",
     onDrop: (acceptedFiles) => {
       setUserData({ ...userData, photo: acceptedFiles[0] });
 
@@ -195,11 +195,11 @@ export default function UserSettingsModal({ socket }) {
                       <section
                         className="container"
                         style={{
-                          width: '300px',
-                          backgroundColor: 'lightgrey',
-                        }}
+                          width: "300px",
+                          backgroundColor: "lightgrey",
+                        }} //Remove inline styling
                       >
-                        <div {...getRootProps({ className: 'dropzone' })}>
+                        <div {...getRootProps({ className: "dropzone" })}>
                           <input {...getInputProps()} />
                           <p>
                             Drag 'n' drop some files here, or click to select
@@ -207,7 +207,7 @@ export default function UserSettingsModal({ socket }) {
                           </p>
                         </div>
                         <aside style={thumbsContainer}>{thumbs}</aside>
-                      </section>{' '}
+                      </section>
                     </div>
                     {/* Update Button */}
                     <button

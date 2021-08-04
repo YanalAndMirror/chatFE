@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import ContactItem from './ContactItem';
-import SearchBar from './SearchBar';
+import React, { useState } from "react"; //Importing React is not needed
+import { useSelector } from "react-redux";
+
+//Components
+import ContactItem from "./ContactItem";
+import SearchBar from "./SearchBar";
 
 export default function ContactList({ setRoomId, roomId }) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   let chats = useSelector((state) => state.chats.chats);
   let channels = useSelector((state) => state.chats.channels);
   let user = useSelector((state) => state.user.user);
+
   chats.sort((a, b) => {
     // if no messages in both rooms then order by room creation
     if (
@@ -28,6 +31,7 @@ export default function ContactList({ setRoomId, roomId }) {
       ? -1
       : 1;
   });
+
   channels = channels
     .filter(
       (channel) =>
@@ -45,11 +49,13 @@ export default function ContactList({ setRoomId, roomId }) {
         />
       );
     });
+
   let notSeenRoom = null;
+
   chats = chats
     .filter(
       (chat) =>
-        chat.name.toLowerCase().includes(query) && chat.type !== 'Channel'
+        chat.name.toLowerCase().includes(query) && chat.type !== "Channel"
     )
     .map((chat) => {
       let notSeenCount = chat.messages
@@ -61,11 +67,14 @@ export default function ContactList({ setRoomId, roomId }) {
           return thisCount.length;
         })
         .filter((a) => a).length;
-      if (!notSeenRoom && !roomId && notSeenCount === 0 && query === '') {
+
+      if (!notSeenRoom && !roomId && notSeenCount === 0 && query === "") {
         notSeenRoom = true;
         setRoomId(chat._id);
       }
+
       if (notSeenRoom) return;
+
       return (
         <>
           <ContactItem
@@ -75,15 +84,16 @@ export default function ContactList({ setRoomId, roomId }) {
             lastMessage={
               chat.messages.length > 0
                 ? chat.messages[chat.messages.length - 1]
-                : ''
+                : ""
             }
             setRoomId={setRoomId}
             notSeenCount={notSeenCount}
           />
-          <hr class="border-0 bg-gray-200 text-gray-200 h-px"></hr>{' '}
+          <hr class="border-0 bg-gray-200 text-gray-200 h-px"></hr>
         </>
       );
     });
+
   return (
     <>
       <SearchBar
@@ -96,7 +106,6 @@ export default function ContactList({ setRoomId, roomId }) {
       </div>
       {channels.length > 0 && (
         <>
-          {' '}
           <center>- Channels -</center>
           <div>
             <div class="bg-grey-lighter flex-1 overflow-auto">{channels}</div>

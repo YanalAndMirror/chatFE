@@ -1,9 +1,9 @@
-import { createStore, applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
-import { combineReducers } from 'redux';
-import authReducer from './reducers/authReducer';
-import chatReducer from './reducers/chatReducer';
-import { fetchChannels } from './actions/chatActions';
+import { createStore, applyMiddleware, compose } from "redux";
+import thunk from "redux-thunk";
+import { combineReducers } from "redux";
+import authReducer from "./reducers/authReducer";
+import chatReducer from "./reducers/chatReducer";
+import { fetchChannels } from "./actions/chatActions";
 
 // import { checkUser } from './actions/authActions';
 

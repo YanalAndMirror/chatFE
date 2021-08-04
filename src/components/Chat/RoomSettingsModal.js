@@ -1,53 +1,56 @@
-import { Dialog, Transition, RadioGroup } from '@headlessui/react';
-import { Fragment, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { createRoom, updateRoom } from '../../store/actions/chatActions';
-import { useDropzone } from 'react-dropzone';
-import { useEffect } from 'react';
-import Dropzone from 'dropzone';
-import { MdSettings } from 'react-icons/md';
+import { Fragment, useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { useDropzone } from "react-dropzone";
+import Dropzone from "dropzone"; //Remove unused import
+
+import { Dialog, Transition, RadioGroup } from "@headlessui/react"; //Remove unused import
+import { MdSettings } from "react-icons/md";
+
+//Actions
+import { createRoom, updateRoom } from "../../store/actions/chatActions"; //Remove unused import
 
 export default function RoomSettingsModal({ room }) {
   let [isOpen, setIsOpen] = useState(false);
+  const [files, setFiles] = useState([]);
   const [roomInfo, setRoomInfo] = useState({
     name: room.name,
   });
 
   //   react Dropzone
   const thumbsContainer = {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
     marginTop: 16,
   };
 
   const thumb = {
-    display: 'inline-flex',
+    display: "inline-flex",
     borderRadius: 2,
-    border: '1px solid #eaeaea',
+    border: "1px solid #eaeaea",
     marginBottom: 8,
     marginRight: 8,
     width: 100,
     height: 100,
     padding: 4,
-    boxSizing: 'border-box',
+    boxSizing: "border-box",
   };
 
   const thumbInner = {
-    display: 'flex',
+    display: "flex",
     minWidth: 0,
-    overflow: 'hidden',
+    overflow: "hidden",
   };
 
   const img = {
-    display: 'block',
-    width: 'auto',
-    height: '100%',
+    display: "block",
+    width: "auto",
+    height: "100%",
   };
 
-  const [files, setFiles] = useState([]);
   const { getRootProps, getInputProps } = useDropzone({
-    accept: 'image/*',
+    accept: "image/*",
     onDrop: (acceptedFiles) => {
       setRoomInfo({ ...roomInfo, photo: acceptedFiles[0] });
 
@@ -79,6 +82,7 @@ export default function RoomSettingsModal({ room }) {
 
   //   end react Dropzone
   const dispatch = useDispatch();
+
   const user = useSelector((state) => state.user.user);
 
   function closeModal() {
@@ -88,6 +92,7 @@ export default function RoomSettingsModal({ room }) {
   function openModal() {
     setIsOpen(true);
   }
+
   const handleSubmit = (event) => {
     dispatch(updateRoom(room._id, roomInfo));
     closeModal();
@@ -175,11 +180,11 @@ export default function RoomSettingsModal({ room }) {
                       <section
                         className="container"
                         style={{
-                          width: '300px',
-                          backgroundColor: 'lightgrey',
-                        }}
+                          width: "300px",
+                          backgroundColor: "lightgrey",
+                        }} //Remove inline styling
                       >
-                        <div {...getRootProps({ className: 'dropzone' })}>
+                        <div {...getRootProps({ className: "dropzone" })}>
                           <input {...getInputProps()} />
                           <p>
                             Drag 'n' drop some files here, or click to select
@@ -187,7 +192,7 @@ export default function RoomSettingsModal({ room }) {
                           </p>
                         </div>
                         <aside style={thumbsContainer}>{thumbs}</aside>
-                      </section>{' '}
+                      </section>{" "}
                     </div>
 
                     <button

@@ -1,4 +1,5 @@
 import * as actionTypes from "../actions/types";
+
 const initialState = {
   chats: null,
   channels: null,
@@ -12,6 +13,7 @@ const reducer = (state = initialState, action) => {
         chats: action.payload,
       };
     }
+
     case actionTypes.CREATE_ROOM: {
       let roomExist = state.chats.find(
         (chat) => chat._id === action.payload._id
@@ -31,6 +33,7 @@ const reducer = (state = initialState, action) => {
         };
       }
     }
+
     case actionTypes.ADD_MESSAGE: {
       let newChatAfterMessage = state.chats.map((chat) => {
         if (action.payload.roomId === chat._id) {
@@ -51,6 +54,7 @@ const reducer = (state = initialState, action) => {
         chats: newChatAfterMessage,
       };
     }
+
     case actionTypes.ADD_USER_TO_CHANNEL: {
       let newChannelAfterUser = state.channels.map((channel) => {
         if (action.payload.roomId === channel._id) {
@@ -63,6 +67,7 @@ const reducer = (state = initialState, action) => {
         channels: newChannelAfterUser,
       };
     }
+
     case actionTypes.ADD_USER_TO_GROUP: {
       let newChatsAfterUser = state.chats.map((chat) => {
         if (action.payload.roomId === chat._id) {
@@ -75,10 +80,11 @@ const reducer = (state = initialState, action) => {
         chats: newChatsAfterUser,
       };
     }
+
     case actionTypes.REMOVE_USER_FROM_CHANNEL: {
       let newChannelAfterUserRemove = state.channels.map((channel) => {
         if (action.payload.roomId === channel._id) {
-          console.log("here");
+          console.log("here"); //Remove console log
           channel.users = channel.users.filter(
             (user) => user._id !== action.payload.user._id
           );
@@ -90,6 +96,7 @@ const reducer = (state = initialState, action) => {
         channels: newChannelAfterUserRemove,
       };
     }
+
     case actionTypes.REMOVE_USER_FROM_GROUP: {
       let newChatsAfterUserRemove = state.chats.map((chat) => {
         if (action.payload.roomId === chat._id) {
@@ -104,12 +111,14 @@ const reducer = (state = initialState, action) => {
         chats: newChatsAfterUserRemove,
       };
     }
+
     case actionTypes.FETCH_CHANNELS: {
       return {
         ...state,
         channels: action.payload,
       };
     }
+
     case actionTypes.SEEN_MESSAGE: {
       let seenRoom = state.chats.find(
         (chat) => action.payload.roomId === chat._id
@@ -134,6 +143,7 @@ const reducer = (state = initialState, action) => {
         ),
       };
     }
+
     case actionTypes.READ_MESSAGE: {
       let readRooms = state.chats.map((chat) => {
         if (action.payload.roomIds.includes(chat._id)) {
@@ -157,6 +167,7 @@ const reducer = (state = initialState, action) => {
         chats: readRooms,
       };
     }
+
     case actionTypes.UPDATE_MESSAGE: {
       let updatedRoom = state.chats.find(
         (chat) => action.payload.roomId === chat._id
@@ -167,7 +178,7 @@ const reducer = (state = initialState, action) => {
         }
         return message;
       });
-      console.log(updatedRoom.messages);
+      console.log(updatedRoom.messages); //Remove console log
       return {
         ...state,
         chats: state.chats.map((chat) =>
@@ -175,6 +186,7 @@ const reducer = (state = initialState, action) => {
         ),
       };
     }
+
     case actionTypes.DELETE_MESSAGE: {
       let deletedFromRoom = state.chats.find(
         (chat) => action.payload.roomId === chat._id
@@ -189,6 +201,7 @@ const reducer = (state = initialState, action) => {
         ),
       };
     }
+
     default:
       return state;
   }

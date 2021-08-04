@@ -9,7 +9,8 @@ export const signin = (phoneNumber, code, setError) => {
         phoneNumber: phoneNumber,
         code,
       });
-      console.log(res.data);
+      console.log(res.data); //Remove console log
+
       if (res.data) {
         dispatch(fetchRoom(res.data._id));
         dispatch({
@@ -25,6 +26,7 @@ export const signin = (phoneNumber, code, setError) => {
     }
   };
 };
+
 export const signout = (history, socket) => {
   return async (dispatch) => {
     try {

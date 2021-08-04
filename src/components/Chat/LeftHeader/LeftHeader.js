@@ -1,13 +1,13 @@
 // react imports
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React from "react"; //Not needed
+import { useSelector } from "react-redux";
 
 // assets imports
-import nophoto from '../../../assets/no-photo.png';
+import nophoto from "../../../assets/no-photo.png";
 
 // components imports
-import NewRoomModal from './NewRoomModal';
-import UserSettingsModal from './UserSettingsModal';
+import NewRoomModal from "./NewRoomModal";
+import UserSettingsModal from "./UserSettingsModal";
 
 export default function LeftHeader({ socket }) {
   // store fetch
@@ -20,9 +20,9 @@ export default function LeftHeader({ socket }) {
         <div>
           <img
             class="w-10 h-10 rounded-full inline"
-            src={user.photo === 'no-photo.jpg' ? nophoto : user.photo}
+            src={user.photo === "no-photo.jpg" ? nophoto : user.photo}
           />
-          {' ' + (user.userName ?? user.phonenumber)}
+          {" " + (user.userName ?? user.phonenumber)}
         </div>
         {/* // - End user profile image - // */}
 

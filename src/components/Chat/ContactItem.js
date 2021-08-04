@@ -1,4 +1,6 @@
-import React from "react";
+import React from "react"; //Not needed
+
+//Assets
 import nophoto from "../../assets/no-photo.png";
 
 export default function ContactItem({

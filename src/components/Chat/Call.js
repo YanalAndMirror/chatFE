@@ -1,16 +1,16 @@
-import Peer from "simple-peer";
+import { Fragment, useRef, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
+//Styling
 import { MdCall } from "react-icons/md";
 import { BsFillCameraVideoFill } from "react-icons/bs";
 import { ImPhone } from "react-icons/im";
 import { ImPhoneHangUp } from "react-icons/im";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useRef } from "react";
-
-import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import Peer from "simple-peer";
 
 export default function Call({
   socket,
@@ -24,6 +24,7 @@ export default function Call({
   const user = useSelector((state) => state.user.user);
   let [isOpen, setIsOpen] = useState(false);
   const userVideo2 = useRef(null);
+
   function closeModal() {
     setIsOpen(false);
   }
@@ -38,16 +39,17 @@ export default function Call({
     socket.off("callDecline");
 
     socket.on("callAccept", (data) => {
-      console.log(data);
+      console.log(data); //Remove console log
       startCall(touser._id, video);
     });
+
     socket.on("callDecline", (data) => {
-      console.log(data);
+      console.log(data); //Remove console log
       closeModal();
     });
   };
+
   useEffect(() => {
-    //
     socket.off("call");
     socket.on("call", ({ sender, video }) => {
       play();
@@ -62,7 +64,7 @@ export default function Call({
             color="#27EE20"
             size="24px"
             className="cursor-pointer mr-4 inline-block"
-          />{" "}
+          />
           {sender.userName + " Is Calling" ??
             sender.phoneNumber + " Is Calling"}
           <ImPhoneHangUp
@@ -88,6 +90,7 @@ export default function Call({
       );
     });
   }, []);
+
   const startCall = (userId, video) => {
     navigator.mediaDevices
       .getUserMedia({
@@ -100,7 +103,7 @@ export default function Call({
           trickle: false,
           stream: stream,
         });
-        console.log(stream.getTracks());
+        console.log(stream.getTracks()); //Remove console log
         peer.on("signal", (data) => {
           socket.emit("peer", { userId, data });
         });
@@ -142,7 +145,7 @@ export default function Call({
           userVideo.current.srcObject = comingStream;
         });
         socket.on("startPeer", ({ data }) => {
-          console.log(peer);
+          console.log(peer); //Remove console log
           if (peer.readable) peer.signal(data);
         });
         socket.on("peerEnd", ({ data }) => {
@@ -235,12 +238,14 @@ export default function Call({
                     >
                       Call
                     </Dialog.Title>
+                    {/**Remove inline styling */}
                     <video
                       ref={userVideo}
                       autoPlay
                       style={{ width: "600px" }}
                     />
                     <center>
+                      {/**Remove inline styling */}
                       <video
                         muted
                         ref={userVideo2}

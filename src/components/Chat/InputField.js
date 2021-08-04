@@ -1,6 +1,12 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; //Importing React is not needed
 import { useSelector } from "react-redux";
 
+import Picker from "emoji-picker-react";
+import ReactGiphySearchbox from "react-giphy-searchbox";
+import AudioReactRecorder, { RecordState } from "audio-react-recorder";
+const CryptoJS = require("crypto-js");
+
+//Styling
 import { IoMdClose } from "react-icons/io";
 import { AiOutlineGif } from "react-icons/ai";
 import { ImAttachment } from "react-icons/im";
@@ -9,11 +15,8 @@ import { MdKeyboardVoice } from "react-icons/md";
 import { BsFillImageFill } from "react-icons/bs";
 import { FaLocationArrow } from "react-icons/fa";
 
-import Picker from "emoji-picker-react";
-import ReactGiphySearchbox from "react-giphy-searchbox";
+//Actions
 import instance from "../../store/actions/instance";
-import AudioReactRecorder, { RecordState } from "audio-react-recorder";
-const CryptoJS = require("crypto-js");
 
 export default function InputField({
   roomId,
@@ -32,18 +35,20 @@ export default function InputField({
     setInput({ ...input, [roomId]: (input[roomId] ?? "") + emojiObject.emoji });
     setChosenEmoji(false);
   };
+
   const user = useSelector((state) => state.user.user);
+
   const encryptMessage = (content) => {
     return CryptoJS.AES.encrypt(
       JSON.stringify(content),
       user.secretKey
     ).toString();
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (input[roomId] === "") return;
     let content = {};
-
     content.text = input[roomId];
     content.type = "string";
     if (inputReply[roomId]) {
@@ -57,12 +62,13 @@ export default function InputField({
     setInput({ ...input, [roomId]: "" });
     setInputReply({ ...inputReply, [roomId]: null });
   };
+
   const handleSubmitGiphy = (e) => {
     let content = {};
     content.text = "[GIF]";
     content.type = "giphy";
     content.url = e.embed_url;
-    console.log(e);
+    console.log(e); //Remove console log
     if (inputReply[roomId]) {
       content.to = inputReply[roomId];
     }
@@ -74,13 +80,14 @@ export default function InputField({
     setChosenGiphy(false);
     setInputReply({ ...inputReply, [roomId]: null });
   };
+
   const handleSubmitAttachment = async (e, type) => {
     const formData = new FormData();
     formData.append(
       "file",
       e.target?.files[0] ?? new File([e.blob], "voice.wav")
     );
-    console.log(e);
+    console.log(e); //Remove console log
 
     const res = await instance.post(`/api/v1/rooms/attachment`, formData);
 
@@ -99,6 +106,7 @@ export default function InputField({
     setChosenGiphy(false);
     setInputReply({ ...inputReply, [roomId]: null });
   };
+
   const handleSubmitLocation = async () => {
     let content = {};
     content.type = "location";
@@ -114,6 +122,7 @@ export default function InputField({
       });
     });
   };
+
   return (
     <div class="bg-grey-lighter px-4 py-4 flex items-center">
       <div
@@ -123,7 +132,7 @@ export default function InputField({
         }}
       >
         <GrEmoji color="#1A237E" size="24px" className="cursor-pointer" />
-      </div>{" "}
+      </div>
       <div
         onClick={() => {
           setChosenEmoji(false);
@@ -149,7 +158,7 @@ export default function InputField({
       </div>
       <label className="custom-file-upload">
         <input
-          style={{ display: "none" }}
+          style={{ display: "none" }} //Remove inline styling
           type="file"
           onChange={(e) => {
             handleSubmitAttachment(e, "file");
@@ -164,7 +173,7 @@ export default function InputField({
       <label className="custom-file-upload">
         <input
           accept="image/*"
-          style={{ display: "none" }}
+          style={{ display: "none" }} //Remove inline styling
           type="file"
           onChange={(e) => {
             handleSubmitAttachment(e, "image");

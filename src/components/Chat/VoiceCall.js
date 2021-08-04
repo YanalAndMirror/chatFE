@@ -1,11 +1,15 @@
-import React, { useEffect, useRef, useState, Fragment } from "react";
-import { MdCall } from "react-icons/md";
-import { Dialog, Transition } from "@headlessui/react";
+import React, { useEffect, useRef, useState, Fragment } from "react"; //Importing React is not needed
+import { useSelector } from "react-redux";
+
 import Peer from "simple-peer";
 import io from "socket.io-client";
-import { useSelector } from "react-redux";
-import "../../App.css";
 const socket = io.connect("localhost:8000");
+
+//Styling
+import "../../App.css";
+import { MdCall } from "react-icons/md";
+import { Dialog, Transition } from "@headlessui/react";
+
 export default function VoiceCall() {
   const user = useSelector((state) => state.user.user);
 
@@ -44,11 +48,13 @@ export default function VoiceCall() {
         console.log(error);
       }
     };
+
     getUserMedia();
     socket.on("me", (id) => {
       setMe(id);
     });
-    console.log(socket);
+
+    console.log(socket); //Remove console log
 
     socket.on("callUser", (data) => {
       setReceivingCall(true);
@@ -64,6 +70,7 @@ export default function VoiceCall() {
       trickle: false,
       stream: stream,
     });
+
     peer.on("signal", (data) => {
       socket.emit("callUser", {
         userToCall: id,
@@ -72,9 +79,11 @@ export default function VoiceCall() {
         name: name,
       });
     });
+
     peer.on("stream", (stream) => {
       userVideo.current.srcObject = stream;
     });
+
     socket.on("callAccepted", (signal) => {
       setCallAccepted(true);
       peer.signal(signal);
@@ -90,9 +99,11 @@ export default function VoiceCall() {
       trickle: false,
       stream: stream,
     });
+
     peer.on("signal", (data) => {
       socket.emit("answerCall", { signal: data, to: caller });
     });
+
     peer.on("stream", (stream) => {
       userVideo.current.srcObject = stream;
     });
@@ -105,7 +116,9 @@ export default function VoiceCall() {
     setCallEnded(true);
     connectionRef.current.destroy();
   };
-  console.log(me);
+
+  console.log(me); //Remove console log
+
   return (
     <>
       <div>
@@ -162,6 +175,7 @@ export default function VoiceCall() {
                 >
                   Call
                 </Dialog.Title>
+                {/**Remove inline styling */}
                 <h1 style={{ textAlign: "center", color: "#fff" }}>Zoomish</h1>
                 <div className="container">
                   <div className="video-container">
@@ -172,7 +186,7 @@ export default function VoiceCall() {
                           muted
                           ref={myVideo}
                           autoPlay
-                          style={{ width: "300px" }}
+                          style={{ width: "300px" }} //Remove inline styling
                         />
                       )}
                     </div>
@@ -182,7 +196,7 @@ export default function VoiceCall() {
                           playsInline
                           ref={userVideo}
                           autoPlay
-                          style={{ width: "300px" }}
+                          style={{ width: "300px" }} //Remove inline styling
                         />
                       ) : null}
                     </div>
@@ -194,7 +208,7 @@ export default function VoiceCall() {
                       variant="filled"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      style={{ marginBottom: "20px" }}
+                      style={{ marginBottom: "20px" }} //Remove inline styling
                     />
                     {me}
                     <input

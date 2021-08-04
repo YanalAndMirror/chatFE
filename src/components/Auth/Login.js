@@ -1,21 +1,28 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import loginImage from '../../assets/loginImage.svg';
-import { signin } from '../../store/actions/authActions';
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/material.css';
+import React, { useState } from "react"; //Importing React is not needed
+import { useHistory } from "react-router-dom"; //Remove unused import
+import { useDispatch } from "react-redux";
 
-import ReactCodeInput from 'react-verification-code-input';
-import instance from '../../store/actions/instance';
+//Assets
+import loginImage from "../../assets/loginImage.svg";
+
+//Styling
+import PhoneInput from "react-phone-input-2";
+import ReactCodeInput from "react-verification-code-input";
+import "react-phone-input-2/lib/material.css";
+
+//Actions
+import instance from "../../store/actions/instance";
+import { signin } from "../../store/actions/authActions";
 
 export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState();
-  const [page, setPage] = useState('login');
+  const [page, setPage] = useState("login");
   const [error, setError] = useState(false);
+
   const dispatch = useDispatch();
+
   const handleSubmit = async (code) => {
-    if (page === 'login') {
+    if (page === "login") {
       const res = await instance.post(`/api/v1/users/`, { phoneNumber });
       setPage(res.data);
     } else {
@@ -26,10 +33,10 @@ export default function Login() {
   return (
     <div
       class="flex h-screen items-center justify-center"
-      style={{ background: '#edf2f7' }}
+      style={{ background: "#edf2f7" }} //Remove inline styling
     >
       <div class="shadow-xl p-10 bg-white max-w-xl rounded">
-        {page === 'login' ? (
+        {page === "login" ? (
           <div>
             <img src={loginImage} alt="login" />
             <>
@@ -41,7 +48,7 @@ export default function Login() {
                       value.substr(country.countryCode.length)[0] == 0 ||
                       (value.length !== 12 && value.length !== 3)
                     ) {
-                      return 'Invalid number';
+                      return "Invalid number";
                     } else {
                       return true;
                     }
@@ -84,7 +91,7 @@ export default function Login() {
             />
             <a
               class="text-blue-400 hover:text-blue-600 cursor-pointer"
-              onClick={() => setPage('login')}
+              onClick={() => setPage("login")}
             >
               Resend Code ?
             </a>

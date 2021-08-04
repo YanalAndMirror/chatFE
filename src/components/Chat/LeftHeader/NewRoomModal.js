@@ -52,6 +52,7 @@ export default function NewRoomModal() {
   const [files, setFiles] = useState([]);
   const [selected, setSelected] = useState(options[0]);
   const [room, setRoom] = useState({});
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/*",
     onDrop: (acceptedFiles) => {
@@ -66,6 +67,7 @@ export default function NewRoomModal() {
       );
     },
   });
+
   useEffect(
     () => () => {
       // Make sure to revoke the data uris to avoid memory leaks
@@ -123,6 +125,7 @@ export default function NewRoomModal() {
   const openModal = () => {
     setIsOpen(true);
   };
+
   const handleSubmit = () => {
     let to = room.to;
     if (selected.name !== "Private") {
@@ -303,7 +306,7 @@ export default function NewRoomModal() {
                         style={{
                           width: "300px",
                           backgroundColor: "lightgrey",
-                        }}
+                        }} //Remove inline styling
                       >
                         <div {...getRootProps({ className: "dropzone" })}>
                           <input {...getInputProps()} />
@@ -313,7 +316,7 @@ export default function NewRoomModal() {
                           </p>
                         </div>
                         <aside style={thumbsContainer}>{thumbs}</aside>
-                      </section>{" "}
+                      </section>
                     </div>
                   </>
                 )}

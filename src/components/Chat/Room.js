@@ -1,11 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react"; //Importing React is not needed, remove unused import
 import { useDispatch, useSelector } from "react-redux";
-import { addUserToGroup } from "../../store/actions/chatActions";
+
+//Components
 import InputField from "./InputField";
 import MessageModel from "./MessageModel";
 import MsgsList from "./MsgsList";
 import RightHeader from "./RightHeader";
 import VideoCallModal from "./VideoCallModal";
+
+//Actions
+import { addUserToGroup } from "../../store/actions/chatActions";
 
 export default function Room({ roomId, socket, play, stop }) {
   const dispatch = useDispatch();
@@ -16,14 +20,16 @@ export default function Room({ roomId, socket, play, stop }) {
   const [query, setQuery] = useState("");
   const userVideo = useRef({});
 
+  let channels = useSelector((state) => state.chats.channels);
+  const user = useSelector((state) => state.user.user);
   let thisRoom = useSelector((state) =>
     state.chats.chats?.find((chat) => chat._id === roomId)
   );
-  let channels = useSelector((state) => state.chats.channels);
+
   if (!thisRoom || thisRoom.type === "Channel") {
     thisRoom = channels?.find((chat) => chat._id === roomId);
   }
-  const user = useSelector((state) => state.user.user);
+
   return roomId && thisRoom ? (
     <>
       <MessageModel socket={socket} isOpen={isOpen} setIsOpen={setIsOpen} />
