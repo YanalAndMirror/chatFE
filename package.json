@@ -71,5 +71,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "babel-loader": "8.1.0",
+    "yarn-upgrade-all": "^0.5.4"
   }
 }
