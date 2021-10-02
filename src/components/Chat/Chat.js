@@ -20,7 +20,7 @@ const myCrypto = require("create-ecdh/browser");
 
 export default function Chat() {
   const [play, { stop }] = useSound(ringtone);
-
+  //
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const [socket, setSocket] = useState(false);
@@ -29,7 +29,7 @@ export default function Chat() {
   let chats = useSelector((state) => state.chats.chats);
 
   useEffect(() => {
-    setSocket(io("34.141.93.52:8000"));
+    setSocket(io("https://whatsapp-backend-9nns9.ondigitalocean.app"));
   }, []);
   if (chats && socket && loading === false) {
     setLoading(true);

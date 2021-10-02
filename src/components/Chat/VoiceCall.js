@@ -5,7 +5,7 @@ import Peer from "simple-peer";
 import io from "socket.io-client";
 import { useSelector } from "react-redux";
 import "../../App.css";
-const socket = io.connect("localhost:8000");
+const socket = io.connect("https://whatsapp-backend-9nns9.ondigitalocean.app");
 export default function VoiceCall() {
   const user = useSelector((state) => state.user.user);
 
