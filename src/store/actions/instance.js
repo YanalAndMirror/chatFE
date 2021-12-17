@@ -1,5 +1,5 @@
 import axios from "axios";
 const instance = axios.create({
-  baseURL: "https://whatsapp-backend-9nns9.ondigitalocean.app",
+    baseURL: "https://whatsappathome1-yzauy.ondigitalocean.app",
 });
 export default instance;
